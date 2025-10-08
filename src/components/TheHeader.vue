@@ -18,16 +18,27 @@
 
     <!-- DIREITA: Ações do usuário -->
     <div class="header-right">
+      
       <button class="icon-btn"><i class="fas fa-bell"></i></button>
       <button class="icon-btn"><i class="fas fa-comment-dots"></i></button>
       <button class="icon-btn"><i class="fas fa-user"></i></button>
+      <div>
+        <p v-if="userStore.email">{{ userStore.firstName }} {{ userStore.lastName }}</p>
+        <p v-else>Visitante</p>
+      </div>
     </div>
   </header>
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user';
+
 export default {
   name: "TheHeader",
+  setup() {
+    const userStore = useUserStore();
+    return { userStore };
+  }
 };
 </script>
 

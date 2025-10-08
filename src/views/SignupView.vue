@@ -5,24 +5,23 @@
       <p>É rápido e fácil.</p>
 
       <form @submit.prevent="registerUser">
-
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <input type="text" placeholder="Nome" v-model="form.nome" required />
-          <input type="text" placeholder="Sobrenome" v-model="form.sobrenome" required />
+          <input type="text" placeholder="Nome" v-model="form.firstName" required />
+          <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
         </div>
 
         <!-- Data de nascimento -->
         <div class="birthdate">
           <label>Data de nascimento</label>
           <div class="birth-selects">
-            <select v-model="form.dia">
+            <select v-model="form.birthDate.day">
               <option v-for="d in 31" :key="d">{{ d }}</option>
             </select>
-            <select v-model="form.mes">
-              <option v-for="(m, i) in meses" :key="i" :value="m">{{ m }}</option>
+            <select v-model="form.birthDate.month">
+              <option v-for="(m, i) in meses" :key="i" :value="i + 1">{{ m }}</option>
             </select>
-            <select v-model="form.ano">
+            <select v-model="form.birthDate.year">
               <option v-for="a in anos" :key="a">{{ a }}</option>
             </select>
           </div>
@@ -34,15 +33,15 @@
           <div class="options-box">
             <label class="radio-box">
               Feminino
-              <input type="radio" value="Feminino" v-model="form.genero" />
+              <input type="radio" value="FEMALE" v-model="form.gender" />
             </label>
             <label class="radio-box">
               Masculino
-              <input type="radio" value="Masculino" v-model="form.genero" />
+              <input type="radio" value="MALE" v-model="form.gender" />
             </label>
             <label class="radio-box">
-              Personalizado
-              <input type="radio" value="Personalizado" v-model="form.genero" />
+              Outro
+              <input type="radio" value="OTHER" v-model="form.gender" />
             </label>
           </div>
         </div>
@@ -53,27 +52,22 @@
           <div class="options-box">
             <label class="radio-box">
               Usuário Comum
-              <input type="radio" value="Comum" v-model="form.tipoConta" />
+              <input type="radio" value="NORMAL" v-model="form.role" />
             </label>
             <label class="radio-box">
               Profissional
-              <input type="radio" value="Profissional" v-model="form.tipoConta" />
+              <input type="radio" value="PROFESSIONAL" v-model="form.role" />
+            </label>
+            <label class="radio-box">
+              Administrador
+              <input type="radio" value="ADMIN" v-model="form.role" />
             </label>
           </div>
         </div>
 
-        <!-- Campos extras para profissionais -->
-        <div v-if="form.tipoConta === 'Profissional'" class="extra-fields">
-          <input type="text" placeholder="CPF ou CNPJ" v-model="form.documento" />
-          <label class="upload-label">
-            <span>Enviar certificado</span>
-            <input type="file" @change="handleFileUpload" />
-          </label>
-        </div>
-
         <!-- Contato e senha -->
-        <input type="text" placeholder="Celular ou email" v-model="form.contato" required />
-        <input type="password" placeholder="Nova senha" v-model="form.senha" required />
+        <input type="email" placeholder="Email" v-model="form.email" required />
+        <input type="password" placeholder="Senha" v-model="form.password" required />
 
         <button type="submit" class="signup-btn">Cadastre-se</button>
       </form>
@@ -84,37 +78,57 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user';
+import axios from 'axios';
+
 export default {
-  name: "SignupView",
+  name: 'SignupView',
   data() {
     return {
       form: {
-        nome: "",
-        sobrenome: "",
-        dia: 1,
-        mes: "jan",
-        ano: new Date().getFullYear(),
-        genero: "",
-        tipoConta: "Comum",
-        documento: "",
-        certificado: null,
-        contato: "",
-        senha: ""
+        firstName: '',
+        lastName: '',
+        birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
+        gender: '',
+        role: 'NORMAL',
+        email: '',
+        password: ''
       },
-      meses: ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"],
+      meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
       anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
     };
   },
   methods: {
-    goHome() {
-      this.$router.push('/');
-    },
-    handleFileUpload(event) {
-      this.form.certificado = event.target.files[0];
-    },
-    registerUser() {
-      console.log("Dados do formulário:", this.form);
-      alert("Cadastro enviado!");
+    goHome() { this.$router.push('/'); },
+    async registerUser() {
+      try {
+        const birthDate = new Date(
+          this.form.birthDate.year,
+          this.form.birthDate.month - 1,
+          this.form.birthDate.day
+        );
+        const userData = {
+          firstName: this.form.firstName,
+          lastName: this.form.lastName,
+          birthDate: birthDate.toISOString().split('T')[0], // "YYYY-MM-DD"
+          gender: this.form.gender,
+          email: this.form.email,
+          password: this.form.password,
+          role: this.form.role
+        };
+
+        const response = await axios.post('/user', userData);
+        console.log('Usuário cadastrado com sucesso:', response.data);
+
+        // Atualiza o store com o UserResponseDto do servidor
+        const userStore = useUserStore();
+        userStore.setUser(response.data);
+
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Erro ao cadastrar usuário:', error);
+        alert('Ocorreu um erro ao cadastrar o usuário. Tente novamente.');
+      }
     }
   }
 };
