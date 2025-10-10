@@ -6,7 +6,7 @@
 <script>
 //import TheHeader from './components/TheHeader.vue'
 //import TheHome from './components/TheHome.vue'
-//import LoginView from '../src/views/LoginView.vue'
+//import SignupView from '@/views/SignupView.vue'
 
 
 export default {

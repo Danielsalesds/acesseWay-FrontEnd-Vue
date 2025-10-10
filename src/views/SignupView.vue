@@ -4,10 +4,10 @@
       <h2>Criar uma nova conta</h2>
       <p>É rápido e fácil.</p>
 
-      <form @submit.prevent="registerUser">
+      <form @submit.prevent="handleSubmit">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <input type="text" placeholder="Nome" v-model="form.firstName" required />
+          <input type="text" placeholder="Nome" v-model="form.firstname" required />
           <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
         </div>
 
@@ -19,10 +19,10 @@
               <option v-for="d in 31" :key="d">{{ d }}</option>
             </select>
             <select v-model="form.birthDate.month">
-              <option v-for="(m, i) in meses" :key="i" :value="i + 1">{{ m }}</option>
+              <option v-for="(m, i) in calend.meses" :key="i" :value="i + 1">{{ m }}</option>
             </select>
             <select v-model="form.birthDate.year">
-              <option v-for="a in anos" :key="a">{{ a }}</option>
+              <option v-for="a in calend.anos" :key="a">{{ a }}</option>
             </select>
           </div>
         </div>
@@ -77,61 +77,44 @@
   </div>
 </template>
 
-<script>
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
+<script setup>
+import { ref } from 'vue'
+import  {useStore} from '@/stores/signupStore'
 
-export default {
-  name: 'SignupView',
-  data() {
-    return {
-      form: {
-        firstName: '',
+const store = useStore()
+
+const form = ref({
+        firstname: '',
         lastName: '',
         birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
-        gender: '',
+        gender: 'OTHER',
         role: 'NORMAL',
         email: '',
         password: ''
-      },
-      meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-      anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-    };
-  },
-  methods: {
-    goHome() { this.$router.push('/'); },
-    async registerUser() {
-      try {
-        const birthDate = new Date(
-          this.form.birthDate.year,
-          this.form.birthDate.month - 1,
-          this.form.birthDate.day
-        );
-        const userData = {
-          firstName: this.form.firstName,
-          lastName: this.form.lastName,
-          birthDate: birthDate.toISOString().split('T')[0], // "YYYY-MM-DD"
-          gender: this.form.gender,
-          email: this.form.email,
-          password: this.form.password,
-          role: this.form.role
-        };
-
-        const response = await axios.post('/user', userData);
-        console.log('Usuário cadastrado com sucesso:', response.data);
-
-        // Atualiza o store com o UserResponseDto do servidor
-        const userStore = useUserStore();
-        userStore.setUser(response.data);
-
-        this.$router.push('/login');
-      } catch (error) {
-        console.error('Erro ao cadastrar usuário:', error);
-        alert('Ocorreu um erro ao cadastrar o usuário. Tente novamente.');
-      }
-    }
-  }
-};
+      })
+const calend = ref({
+        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
+        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
+    })
+async function handleSubmit() {
+  await store.createProfile(form.value)
+  form.value = {
+     firstname: '', 
+     lastName: '', 
+     birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
+     gender: '',
+    role: 'NORMAL',
+    email: '',
+    password: ''
+     } // limpa o formulário
+     calend.value = {
+        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
+        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
+     }
+}
+      
+  
+  
 </script>
 
 <style scoped>
