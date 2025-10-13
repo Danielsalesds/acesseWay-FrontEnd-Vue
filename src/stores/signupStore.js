@@ -12,7 +12,7 @@ export const useStore = defineStore('profile', {
       this.loading = true
       this.error = null
       try {
-        const res = await fetch('http://localhost:3000/profiles', {
+        const res = await fetch('https://auth-test-v7zw.onrender.com/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newUser)
