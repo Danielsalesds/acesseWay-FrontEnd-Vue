@@ -3,13 +3,15 @@
     <div class="login-box">
       
       <!-- Formulário de login -->
-      <form class="login-form" @submit.prevent="goToHome">
+      <form class="login-form" @submit.prevent="login">
         <input 
           type="text" 
+          v-model="form.email"
           placeholder="Email ou telefone" 
         />
         <input 
-          type="password" 
+          type="password"
+          v-model="form.password"
           placeholder="Senha" 
         />
         <button type="submit" class="login-btn">Entrar</button>
@@ -17,6 +19,7 @@
       </form>
 
       <hr />
+      <h2>TESTE</h2>
 
       <!-- Criar nova conta -->
       <button class="signup-btn" @click="Signup">Criar nova conta</button>
@@ -29,18 +32,36 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "LoginView",
-  methods: {
-    goToHome() {
-      this.$router.push('/home')
-    },
-    Signup() {
-      this.$router.push('/Signup')
+<script setup>
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import  {useStore} from '@/stores/signupStore'
+
+  const store = useStore()
+  const router = useRouter()
+  
+  const form = ref({
+    email:'',
+    password:''
+  })
+  
+
+  async function login() {
+    await store.login(form.value);
+    router.push('/home')
+
+    form.value = {
+      email : '',
+      password : ''
     }
+    
   }
-}
+
+  // Funções de navegação
+
+  const Signup = () => {
+    router.push('/Signup')
+  }
 </script>
 
 <style scoped>
