@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await fetch('https://auth-test-v7zw.onrender.com/auth/login ', {
+        const res = await fetch('https://auth-test-v7zw.onrender.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -23,10 +23,13 @@ export const useAuthStore = defineStore('auth', {
       if (!res.ok) throw new Error('Login inválido')
 
       const data = await res.json()
-      this.user = data  // guarda o usuário criado (apenas se precisar exibir algo)
+
+      this.user = data || null // guarda o usuário criado (apenas se precisar exibir algo)
       console.log('Usuário Logado:', data)
+
       this.token = data.token
       localStorage.setItem('token', data.token)
+
       } catch (error) {
         this.error = 'Erro ao tentar fazer login!'
         
@@ -47,7 +50,6 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       this.token = null
-      this.user = null
       localStorage.removeItem('token')
       this.user = null
       this.error = null
