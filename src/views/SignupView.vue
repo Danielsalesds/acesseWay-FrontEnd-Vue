@@ -7,7 +7,7 @@
       <form @submit.prevent="handleSubmit">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <input type="text" placeholder="Nome" v-model="form.firstname" required />
+          <input type="text" placeholder="Nome" v-model="form.firstName" required />
           <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
         </div>
 
@@ -79,43 +79,58 @@
 
 <script setup>
 import { ref } from 'vue'
-import  {useStore} from '@/stores/signupStore'
+import { useStore } from '@/stores/signupStore'
 
 const store = useStore()
 
 const form = ref({
-        firstname: '',
-        lastName: '',
-        birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
-        gender: 'OTHER',
-        role: 'NORMAL',
-        email: '',
-        password: ''
-      })
+  firstName: '', 
+  lastName: '',
+  birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
+  gender: 'OTHER',
+  role: 'NORMAL',
+  email: '',
+  password: '',
+  imageUrl: '' 
+})
+
 const calend = ref({
-        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-    })
+  meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
+  anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
+})
+
 async function handleSubmit() {
-  await store.createProfile(form.value)
+  //  Converte birthDate para string "yyyy-MM-dd"
+  const { day, month, year } = form.value.birthDate
+  const birthDateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+
+  const userPayload = {
+    firstName: form.value.firstName,
+    lastName: form.value.lastName,
+    birthDate: birthDateString,
+    gender: form.value.gender,
+    role: form.value.role,
+    email: form.value.email,
+    password: form.value.password,
+    imageUrl: form.value.imageUrl
+  }
+
+  await store.createProfile(userPayload)
+
+  // Limpa o formulário
   form.value = {
-     firstname: '', 
-     lastName: '', 
-     birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
-     gender: '',
+    firstName: '',
+    lastName: '',
+    birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
+    gender: 'OTHER',
     role: 'NORMAL',
     email: '',
-    password: ''
-     } // limpa o formulário
-     calend.value = {
-        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-     }
+    password: '',
+    imageUrl: ''
+  }
 }
-      
-  
-  
 </script>
+
 
 <style scoped>
 .signup-container {
