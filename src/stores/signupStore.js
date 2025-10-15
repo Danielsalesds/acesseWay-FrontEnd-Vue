@@ -15,7 +15,7 @@ export const useStore = defineStore('profile', {
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.post('/profiles', newUser,{ withCredentials: true })
+        const { data } = await api.post('https://auth-test-v7zw.onrender.com/auth', newUser,{ withCredentials: true })
         this.user = data
         console.log('Usuário cadastrado:', data)
       } catch (err) {

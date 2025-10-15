@@ -1,10 +1,13 @@
 <template>
-  
   <div class="layout-home">
-    <TheHeader/>
+    <!-- Passa função toggleMap para o Header -->
+    <TheHeader @toggle-map="toggleMap" />
     <main class="content">
       <LeftSidebar />
-      <TheFeed />
+      
+      <!-- Mostra feed ou mapa -->
+      <component :is="showMap ? 'MapsView' : 'TheFeed'" />
+
       <RightSidebar />
     </main>
   </div>
@@ -15,17 +18,29 @@ import LeftSidebar from '../components/LeftSidebar.vue'
 import TheFeed from '../components/TheFeed.vue'
 import RightSidebar from '../components/RightSidebar.vue'
 import TheHeader from '../components/TheHeader.vue'
+import MapsView from '../components/MapsView.vue'
 
 export default {
   components: {
-    
     LeftSidebar,
     TheFeed,
     RightSidebar,
-    TheHeader
+    TheHeader,
+    MapsView
+  },
+  data() {
+    return {
+      showMap: false
+    }
+  },
+  methods: {
+    toggleMap() {
+      this.showMap = !this.showMap
+    }
   }
 }
 </script>
+
 
 <style scoped>
 html, body {
