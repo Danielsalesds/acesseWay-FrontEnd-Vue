@@ -47,7 +47,9 @@
   
 
   async function login() {
-    await store.login(form.value);
+    
+    await store.logar(form.value);
+
     router.push('/home')
 
     form.value = {

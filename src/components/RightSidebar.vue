@@ -31,4 +31,16 @@
   padding: 6px 0;
   color: #b0b3b8;
 }
+/* Responsividade */
+@media (max-width: 1024px) {
+  .right-sidebar {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .right-sidebar {
+    display: none; /* Sidebar some em telas pequenas */
+  }
+}
 </style>

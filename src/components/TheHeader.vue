@@ -2,7 +2,7 @@
   <header class="header">
     <!-- ESQUERDA: Logo + busca -->
     <div class="header-left">
-      <div class="logo">Way Plus</div>
+      <div class="logo">Access Way</div>
       <div class="search-bar">
         <i class="fas fa-search"></i>
         <input type="text" placeholder="Pesquisar na Way Plus" />
@@ -23,23 +23,22 @@
       <button class="icon-btn"><i class="fas fa-comment-dots"></i></button>
       <button class="icon-btn"><i class="fas fa-user"></i></button>
       <div>
-        <p v-if="userStore.email">{{ userStore.firstName }} {{ userStore.lastName }}</p>
+        <p v-if="user.email">{{ user.firstName }} {{ user.lastName }}</p>
         <p v-else>Visitante</p>
       </div>
     </div>
   </header>
 </template>
 
-<script>
-import { useUserStore } from '@/stores/user';
+<script setup>
+import { storeToRefs } from 'pinia'
+import { useStore } from '@/stores/signupStore'
 
-export default {
-  name: "TheHeader",
-  setup() {
-    const userStore = useUserStore();
-    return { userStore };
-  }
-};
+const store = useStore()
+
+// Cria refs reativas para os estados do store
+const { user } = storeToRefs(store)
+
 </script>
 
 <style scoped>
@@ -150,5 +149,26 @@ export default {
 
 .icon-btn:hover {
   background-color: #4e4f50;
+}
+/* ===== Responsividade ===== */
+@media (max-width: 1024px) {
+  .search-bar input {
+    width: 180px;
+  }
+  .header-center {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar input {
+    display: none; /* Oculta a barra de busca */
+  }
+  .header-center {
+    gap: 15px;
+  }
+  .header-right p {
+    display: none; /* Oculta nome do usuário */
+  }
 }
 </style>
