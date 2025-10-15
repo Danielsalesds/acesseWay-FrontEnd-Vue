@@ -7,7 +7,7 @@
       <form @submit.prevent="handleSubmit">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <input type="text" placeholder="Nome" v-model="form.firstname" required />
+          <input type="text" placeholder="Nome" v-model="form.firstName" required />
           <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
         </div>
 
@@ -84,7 +84,7 @@ import  {useStore} from '@/stores/signupStore'
 const store = useStore()
 
 const form = ref({
-        firstname: '',
+        firstName: '',
         lastName: '',
         birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
         gender: 'OTHER',
@@ -97,9 +97,15 @@ const calend = ref({
         anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
     })
 async function handleSubmit() {
-  await store.createProfile(form.value)
+  const formData = form.value
+  const formattedBirthDate = `${formData.birthDate.year}-${String(formData.birthDate.month).padStart(2, '0')}-${String(formData.birthDate.day).padStart(2, '0')}`;
+  const  userToCreate = {
+    ...formData,
+    birthDate: formattedBirthDate
+  }
+  await store.createProfile(userToCreate)
   form.value = {
-     firstname: '', 
+     firstName: '', 
      lastName: '', 
      birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
      gender: '',
