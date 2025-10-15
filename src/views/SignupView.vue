@@ -1,10 +1,10 @@
 <template>
-  <div class="signup-container">
-    <div class="signup-box">
-      <h2>Criar uma nova conta</h2>
+  <div class="signup-container" role="main">
+    <div class="signup-box" aria-labelledby="signup-title">
+      <h2 id="signup-title">Criar uma nova conta</h2>
       <p>É rápido e fácil.</p>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" aria-label="Formulário de criação de conta">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
           <input type="text" placeholder="Nome" v-model="form.firstName" required />
@@ -13,61 +13,62 @@
 
         <!-- Data de nascimento -->
         <div class="birthdate">
-          <label>Data de nascimento</label>
+          <label for="birth-day">Data de nascimento</label>
           <div class="birth-selects">
-            <select v-model="form.birthDate.day">
+            <select id="birth-day" v-model="form.birthDate.day" aria-label="Dia de nascimento">
               <option v-for="d in 31" :key="d">{{ d }}</option>
             </select>
-            <select v-model="form.birthDate.month">
+
+            <select id="birth-month" v-model="form.birthDate.month" aria-label="Mês de nascimento">
               <option v-for="(m, i) in calend.meses" :key="i" :value="i + 1">{{ m }}</option>
             </select>
-            <select v-model="form.birthDate.year">
+
+            <select id="birth-year" v-model="form.birthDate.year" aria-label="Ano de nascimento">
               <option v-for="a in calend.anos" :key="a">{{ a }}</option>
             </select>
           </div>
         </div>
-
+          <h2>TESTE</h2>
         <!-- Gênero -->
-        <div class="gender">
-          <label>Gênero</label>
+        <fieldset class="gender">
+          <legend>Gênero</legend>
           <div class="options-box">
-            <label class="radio-box">
+            <label class="radio-box" for="gender-female">
               Feminino
-              <input type="radio" value="FEMALE" v-model="form.gender" />
+              <input id="gender-female" type="radio" value="FEMALE" v-model="form.gender" />
             </label>
-            <label class="radio-box">
+            <label class="radio-box" for="gender-male">
               Masculino
-              <input type="radio" value="MALE" v-model="form.gender" />
+              <input id="gender-male" type="radio" value="MALE" v-model="form.gender" />
             </label>
-            <label class="radio-box">
+            <label class="radio-box" for="gender-other">
               Outro
-              <input type="radio" value="OTHER" v-model="form.gender" />
+              <input id="gender-other" type="radio" value="OTHER" v-model="form.gender" />
             </label>
           </div>
-        </div>
+        </fieldset>
 
         <!-- Tipo de conta -->
-        <div class="account-type">
-          <label>Tipo de conta</label>
+        <fieldset class="account-type">
+          <legend>Tipo de conta</legend>
           <div class="options-box">
-            <label class="radio-box">
+            <label class="radio-box" for="role-normal">
               Usuário Comum
-              <input type="radio" value="NORMAL" v-model="form.role" />
+              <input id="role-normal" type="radio" value="NORMAL" v-model="form.role" />
             </label>
-            <label class="radio-box">
+            <label class="radio-box" for="role-pro">
               Profissional
-              <input type="radio" value="PROFESSIONAL" v-model="form.role" />
-            </label>
-            <label class="radio-box">
-              Administrador
-              <input type="radio" value="ADMIN" v-model="form.role" />
+              <input id="role-pro" type="radio" value="PROFESSIONAL" v-model="form.role" />
             </label>
           </div>
-        </div>
+        </fieldset>
 
         <!-- Contato e senha -->
-        <input type="email" placeholder="Email" v-model="form.email" required />
-        <input type="password" placeholder="Senha" v-model="form.password" required />
+        <label for="email" class="sr-only">Email</label>
+        <input id="email" type="email" placeholder="Email" v-model="form.email" required aria-required="true" />
+
+        <label for="password" class="sr-only">Senha</label>
+        <input id="password" type="password" placeholder="Senha" v-model="form.password" required aria-required="true" />
 
         <button type="submit" class="signup-btn">Cadastre-se</button>
       </form>
@@ -79,23 +80,26 @@
 
 <script setup>
 import { ref } from 'vue'
-import  {useStore} from '@/stores/signupStore'
+import { useStore } from '@/stores/signupStore'
 
 const store = useStore()
 
 const form = ref({
-        firstName: '',
-        lastName: '',
-        birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
-        gender: 'OTHER',
-        role: 'NORMAL',
-        email: '',
-        password: ''
-      })
+  firstName: '',
+  lastName: '',
+  birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
+  gender: 'OTHER',
+  role: 'NORMAL',
+  email: '',
+  password: '',
+  imageUrl: '' 
+})
+
 const calend = ref({
-        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-    })
+  meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
+  anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
+})
+
 async function handleSubmit() {
   const formData = form.value
   const formattedBirthDate = `${formData.birthDate.year}-${String(formData.birthDate.month).padStart(2, '0')}-${String(formData.birthDate.day).padStart(2, '0')}`;
@@ -105,69 +109,85 @@ async function handleSubmit() {
   }
   await store.createProfile(userToCreate)
   form.value = {
-     firstName: '', 
-     lastName: '', 
-     birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
-     gender: '',
+    firstName: '', 
+    lastName: '', 
+    birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
+    gender: '',
     role: 'NORMAL',
     email: '',
-    password: ''
-     } // limpa o formulário
-     calend.value = {
-        meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-        anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-     }
+    password: '',
+    imageUrl: ''
+  }
 }
-      
-  
-  
 </script>
 
+
 <style scoped>
+/* Texto oculto apenas para leitores de tela */
+.sr-only {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .signup-container {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f0f2f5;
   min-height: 100vh;
+  padding: 20px;
 }
 
 .signup-box {
-  background: #fff;
-  padding: 30px 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background-color: #fff;
+  padding: 35px 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   width: 400px;
+  max-width: 100%;
+  font-family: Arial, sans-serif;
 }
 
 .signup-box h2 {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 5px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1c1e21;
+  margin-bottom: 4px;
 }
 
 .signup-box p {
   text-align: center;
   color: #606770;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .name-fields {
   display: flex;
   gap: 10px;
-}
-
-.name-fields input {
-  flex: 1;
+  margin-bottom: 15px;
 }
 
 input, select {
   width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 11px 12px;
+  margin-top: 6px;
+  border: 1px solid #ccd0d5;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  color: #1c1e21;
+  background-color: #fff;
+}
+
+input:focus, select:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
 }
 
 .birth-selects {
@@ -175,31 +195,30 @@ input, select {
   gap: 8px;
 }
 
-/* Seções */
 .gender, .account-type {
   margin-top: 15px;
 }
 
-/* Caixas de opções estilo Facebook */
 .options-box {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   margin-top: 6px;
-  gap: 8px;
 }
 
 .radio-box {
   flex: 1;
   border: 1px solid #ccd0d5;
-  border-radius: 4px;
-  background-color: #fff;
-  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: #f5f6f700;
+  padding: 10px 12px;
   font-size: 14px;
   color: #1c1e21;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .radio-box input {
@@ -208,25 +227,12 @@ input, select {
 }
 
 .radio-box:hover {
-  background-color: #f5f6f7;
+  background-color: #e4e6eb;
 }
 
-.extra-fields {
-  margin-top: 15px;
-}
-
-.upload-label {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 8px;
-  font-size: 14px;
-  color: #1877f2;
-  cursor: pointer;
-}
-
-.upload-label input {
-  margin-top: 4px;
+.radio-box:focus-within {
+  outline: 2px solid #1877f2;
+  outline-offset: 2px;
 }
 
 .signup-btn {
@@ -235,22 +241,33 @@ input, select {
   color: white;
   padding: 12px;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 15px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  margin-top: 20px;
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .signup-btn:hover {
   background-color: #36a420;
 }
 
+.signup-btn:focus {
+  outline: 3px solid #1c1e21;
+  outline-offset: 2px;
+}
+
+.signup-btn:active {
+  transform: scale(0.98);
+}
+
 .login-link {
   display: block;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 18px;
   color: #1877f2;
+  font-size: 14px;
   text-decoration: none;
 }
 

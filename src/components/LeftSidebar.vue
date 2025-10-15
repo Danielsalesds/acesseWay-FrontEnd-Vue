@@ -37,4 +37,16 @@
   background-color: #3a3b3c;
   border-radius: 8px;
 }
+/* ===== Responsividade ===== */
+@media (max-width: 1024px) {
+  .left-sidebar {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .left-sidebar {
+    display: none; /* Sidebar some em telas pequenas */
+  }
+}
 </style>

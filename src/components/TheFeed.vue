@@ -41,4 +41,16 @@ export default {
   padding: 15px;
   margin-bottom: 15px;
 }
+/* Responsividade */
+@media (max-width: 1024px) {
+  .feed {
+    padding: 10px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed {
+    padding: 10px;
+  }
+}
 </style>
