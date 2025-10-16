@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
 
   devServer: {
-    port: 3005,
+    port: 3000,
     proxy: {
       '/api': {
         target: 'https://user-ms-yb1o.onrender.com',
