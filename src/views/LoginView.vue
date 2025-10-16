@@ -35,9 +35,9 @@
 <script setup>
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import  {useStore} from '@/stores/signupStore'
+  import  {useAuthStore} from '@/stores/loginStore'
 
-  const store = useStore()
+  const store = useAuthStore()
   const router = useRouter()
   
   const form = ref({
@@ -48,7 +48,7 @@
 
   async function login() {
     
-    await store.logar(form.value);
+    await store.login(form.value);
 
     router.push('/home')
 

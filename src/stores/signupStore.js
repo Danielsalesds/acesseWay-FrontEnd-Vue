@@ -16,8 +16,9 @@ export const useStore = defineStore('profile', {
       this.error = null
       try {
         const { data } = await api.post('https://auth-test-v7zw.onrender.com/auth', newUser,{ withCredentials: true })
-        this.user = data.content || null
-        console.log('Usuário cadastrado:', data.content)
+        this.user = data || null
+        console.log('Usuário cadastrado:', data)
+
       } catch (err) {
         this.error = err.response?.data?.message || 'Erro ao cadastrar perfil'
         console.error(err)
@@ -59,13 +60,12 @@ export const useStore = defineStore('profile', {
     async getUserById(userId) {
         if (!userId) return null
         // busca lista atualizada
-        await this.getAllProfiles();
 
         this.loading = true
         this.error = null
         try {
             // Busca no backend
-            const { data } = await api.get(`https://user-ms-yb1o.onrender.com/user/${userId}`)
+            const { data } = await api.get(`/user/${userId}`)
             
             // Atualiza o estado local, se quiser
             this.user = data || null
@@ -104,9 +104,6 @@ export const useStore = defineStore('profile', {
             console.error("Dados de login inválidos:", userLoad);
             return;
         }
-
-        // busca lista atualizada
-        await this.getAllProfiles();
 
         // busca segura (evita undefined)
         const foundUser = this.users.find(

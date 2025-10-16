@@ -16,7 +16,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/loginStore'
 
+const store = useAuthStore()
 const router = useRouter()
 const menuOpen = ref(false)
 
@@ -30,7 +32,7 @@ function goToEditProfile() {
 }
 
 function logout() {
-  
+  store.logout()
   router.push('/')
 }
 </script>

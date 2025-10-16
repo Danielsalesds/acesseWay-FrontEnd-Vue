@@ -7,11 +7,8 @@
       <form @submit.prevent="handleSubmit" aria-label="Formulário de criação de conta">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <label for="firstName" class="sr-only">Nome</label>
-          <input id="firstName" type="text" placeholder="Nome" v-model="form.firstName" required aria-required="true" />
-
-          <label for="lastName" class="sr-only">Sobrenome</label>
-          <input id="lastName" type="text" placeholder="Sobrenome" v-model="form.lastName" required aria-required="true" />
+          <input type="text" placeholder="Nome" v-model="form.firstName" required />
+          <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
         </div>
 
         <!-- Data de nascimento -->
@@ -104,29 +101,18 @@ const calend = ref({
 })
 
 async function handleSubmit() {
-  //  Converte birthDate para string "yyyy-MM-dd"
-  const { day, month, year } = form.value.birthDate
-  const birthDateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-
-  const userPayload = {
-    firstName: form.value.firstName,
-    lastName: form.value.lastName,
-    birthDate: birthDateString,
-    gender: form.value.gender,
-    role: form.value.role,
-    email: form.value.email,
-    password: form.value.password,
-    imageUrl: form.value.imageUrl
+  const formData = form.value
+  const formattedBirthDate = `${formData.birthDate.year}-${String(formData.birthDate.month).padStart(2, '0')}-${String(formData.birthDate.day).padStart(2, '0')}`;
+  const  userToCreate = {
+    ...formData,
+    birthDate: formattedBirthDate
   }
-
-  await store.createProfile(userPayload)
-
-  // Limpa o formulário
+  await store.createProfile(userToCreate)
   form.value = {
-    firstName: '',
-    lastName: '',
-    birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
-    gender: 'OTHER',
+    firstName: '', 
+    lastName: '', 
+    birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
+    gender: '',
     role: 'NORMAL',
     email: '',
     password: '',
