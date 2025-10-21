@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import { api } from '@/assets/api/axios'
+//import { useRouter } from 'vue-router' 
+import { useAuthStore } from '@/stores/loginStore'
+
 
 export const useStore = defineStore('profile', {
   state: () => ({
@@ -28,32 +31,58 @@ export const useStore = defineStore('profile', {
     },
     // 🔹 Atualizar usuário pelo ID
     async updateProfile(userId, updatedData) {
+      console.log(">>>> ID do usuário =", userId)
+
+      
+      const authStore = useAuthStore() //  acessa token do outro store
+      //carregar useAuthStore 
+      if (!authStore.user) {
+        await authStore.getUserProfile(userId)
+      }
+      const token = authStore.token     // pega o token persistido
+      this.user = authStore.user
+      console.log("User antes: ", this.user )
+
+      if (!userId) {
+        console.error("ID do usuário não fornecido")
+        return null
+      }
+
+      if (!token) {
+        console.error("Token não encontrado, faça login novamente")
+        return null
+      }
+
+      this.loading = true
+      this.error = null
+
+      try {
+        //  Envia o token no header Authorization
+        const { data } = await api.put(`/user/${userId}`, updatedData, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        // Atualiza o estado local (opcional)
+        if (this.user && this.user.id === userId) {
+          this.user = { ...this.user, ...data }
+        }
+        console.log("User Depois: ", this.user )
+        authStore.user = { ...authStore.user, ...data }
+
+        console.log("Usuário atualizado com sucesso:", "Só DATA: ", data)
         
-        if (!userId) {
-            console.error("ID do usuário não fornecido")
-            return null
-        }
+        return data
 
-        this.loading = true
-        this.error = null
-        try {
-            // Atualiza no backend
-            const { data } = await api.put(`/user/${userId}`, updatedData, { withCredentials: true })
+      } catch (err) {
+        this.error = err.response?.data?.message || "Erro ao atualizar usuário"
+        console.error("Erro no update:", err)
+        return null
 
-            // Atualiza o estado local (opcional)
-            if (this.user && this.user.id === userId) {
-            this.user = { ...this.user, ...data.content }
-            }
-
-            console.log("Usuário atualizado com sucesso:", data.content)
-            return data.content
-        } catch (err) {
-            this.error = err.response?.data?.message || "Erro ao atualizar usuário"
-            console.error(err)
-            return null
-        } finally {
-            this.loading = false
-        }
+      } finally {
+        this.loading = false
+      }
     },
 
     // 🔹 Buscar usuário por ID
@@ -86,7 +115,7 @@ export const useStore = defineStore('profile', {
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.get('/user')
+        const { data } = await api.get('/user?size=30')
         this.users = data.content || []
         console.log('Perfis encontrados-->>', this.users)
       } catch (err) {
@@ -125,3 +154,6 @@ export const useStore = defineStore('profile', {
     }
   }
 })
+
+
+

@@ -37,7 +37,8 @@ export default {
     toggleMap() {
       this.showMap = !this.showMap
     }
-  }
+  },
+ 
 }
 </script>
 

@@ -5,8 +5,8 @@
     </button>
 
     <div v-if="menuOpen" class="dropdown">
-        <p class="user-name">teste</p>
-        <p class="user-email">teste</p>
+        <p class="user-name" >{{user.firstName}}</p>
+        <p class="user-email">{{user.email}}</p>
         <hr />
         <button @click="goToEditProfile">Editar perfil</button>
         <button @click="logout">Sair</button>
@@ -15,16 +15,20 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router' 
 import { useAuthStore } from '@/stores/loginStore'
 
 const store = useAuthStore()
 const router = useRouter()
 const menuOpen = ref(false)
 
+const user = store.user
+
+
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
+
 
 function goToEditProfile() {
   menuOpen.value = false

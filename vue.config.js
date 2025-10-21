@@ -12,7 +12,7 @@ module.exports = defineConfig({
         pathRewrite: {'^/api' : ''} // opcional, remove /api ao mandar pro backend
 
       },
-      '/api/login': {
+      '/api/conect': {
     target: 'https://auth-test-v7zw.onrender.com/auth/login',
     changeOrigin: true,
     secure: false,
