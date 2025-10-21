@@ -7,19 +7,20 @@
         <input 
           type="text" 
           v-model="form.email"
-          placeholder="Email ou telefone" 
+          placeholder="Email "
+          required 
         />
         <input 
           type="password"
           v-model="form.password"
           placeholder="Senha" 
+          required
         />
         <button type="submit" class="login-btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
       </form>
 
       <hr />
-      <h2>TESTE</h2>
 
       <!-- Criar nova conta -->
       <button class="signup-btn" @click="Signup">Criar nova conta</button>
