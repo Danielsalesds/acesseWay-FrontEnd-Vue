@@ -90,7 +90,7 @@ export default {
   
   async mounted() {
     try {
-      const response = await axios.get('http://localhost:8082/api/posts')
+      const response = await axios.get('https://post-ms.onrender.com/api/posts')
       this.posts = response.data
     } catch (error) {
       console.error('Erro ao buscar posts:', error)
