@@ -13,7 +13,7 @@ export const useStore = defineStore('profile', {
   }),
 
   actions: {
-    // 🔹 Criar novo perfil
+    //  Criar novo perfil
     async createProfile(newUser) {
       this.loading = true
       this.error = null

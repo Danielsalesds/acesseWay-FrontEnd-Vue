@@ -48,6 +48,7 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden; /* evita que a página role */
+  width: 100%;
 }
 .layout-home {
   background-color: #18191a;
