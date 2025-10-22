@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
 
   devServer: {
-    port: 3005,
+    port: 3000,
     proxy: {
       '/api': {
         target: 'https://user-ms-yb1o.onrender.com',
@@ -11,7 +11,13 @@ module.exports = defineConfig({
         secure: false,
         pathRewrite: {'^/api' : ''} // opcional, remove /api ao mandar pro backend
 
-      }
+      },
+      '/api/conect': {
+    target: 'https://auth-test-v7zw.onrender.com/auth/login',
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/api/login': '' }
+  }
     },
     allowedHosts: 'all', // permite acessar de qualquer host externo, incluindo ngrok
     host: '0.0.0.0',    // deixa o servidor acessível externamente

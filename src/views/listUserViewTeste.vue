@@ -10,6 +10,7 @@
         <li v-for="user in store.users" :key="user.id" class="user-item">
           <span class="user-id">ID: {{ user.id }}</span>
           <span class="user-name">Nome: {{ user.firstName }}</span>
+          <span class="user-name">Email: {{ user.email }}</span>
         </li>
       </ul>
 

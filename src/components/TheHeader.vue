@@ -14,6 +14,9 @@
       <button class="nav-btn active"><i class="fas fa-home"></i></button>
       <button class="nav-btn"><i class="fas fa-users"></i></button>
       <button class="nav-btn"><i class="fas fa-briefcase"></i></button>
+     <button class="icon-btn" @click="$emit('toggle-map')">
+  <i class="fas fa-map"></i>
+</button>
     </nav>
 
     <!-- DIREITA: Ações do usuário -->
@@ -21,23 +24,24 @@
       
       <button class="icon-btn"><i class="fas fa-bell"></i></button>
       <button class="icon-btn"><i class="fas fa-comment-dots"></i></button>
-      <button class="icon-btn"><i class="fas fa-user"></i></button>
+      <UserMenu />
       <div>
-        <p v-if="user.email">{{ user.firstName }} {{ user.lastName }}</p>
-        <p v-else>Visitante</p>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
-import { useStore } from '@/stores/signupStore'
+import UserMenu from '../components/TheDropdownProfile.vue'
 
-const store = useStore()
+//import { storeToRefs } from 'pinia'
+//import { useStore } from '@/stores/signupStore'
+
+
+//const store = useStore()
 
 // Cria refs reativas para os estados do store
-const { user } = storeToRefs(store)
+//const { user } = storeToRefs(store)
 
 </script>
 

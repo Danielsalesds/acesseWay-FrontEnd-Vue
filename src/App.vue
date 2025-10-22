@@ -3,17 +3,21 @@
   <router-view/>
 </template>
 
-<script>
-//import TheHeader from './components/TheHeader.vue'
-//import TheHome from './components/TheHome.vue'
-//import SignupView from '@/views/SignupView.vue'
+<script setup>
+  import { onMounted } from 'vue'
+  import { useAuthStore } from '@/stores/loginStore' // ajuste o caminho conforme sua estrutura
 
+  const store = useAuthStore()
 
-export default {
-  name: 'App',
- 
-}
+  onMounted(async () => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      store.token = token
+      await store.getUserProfile()
+    }
+  })
 </script>
+
 
 <style>
 
