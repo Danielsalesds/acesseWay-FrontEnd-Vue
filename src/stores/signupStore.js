@@ -16,8 +16,9 @@ export const useStore = defineStore('profile', {
       this.error = null
       try {
         const { data } = await api.post('https://auth-test-v7zw.onrender.com/auth', newUser,{ withCredentials: true })
-        this.user = data
+        this.user = data || null
         console.log('Usuário cadastrado:', data)
+
       } catch (err) {
         this.error = err.response?.data?.message || 'Erro ao cadastrar perfil'
         console.error(err)
@@ -25,6 +26,61 @@ export const useStore = defineStore('profile', {
         this.loading = false
       }
     },
+    // 🔹 Atualizar usuário pelo ID
+    async updateProfile(userId, updatedData) {
+        
+        if (!userId) {
+            console.error("ID do usuário não fornecido")
+            return null
+        }
+
+        this.loading = true
+        this.error = null
+        try {
+            // Atualiza no backend
+            const { data } = await api.put(`/user/${userId}`, updatedData, { withCredentials: true })
+
+            // Atualiza o estado local (opcional)
+            if (this.user && this.user.id === userId) {
+            this.user = { ...this.user, ...data.content }
+            }
+
+            console.log("Usuário atualizado com sucesso:", data.content)
+            return data.content
+        } catch (err) {
+            this.error = err.response?.data?.message || "Erro ao atualizar usuário"
+            console.error(err)
+            return null
+        } finally {
+            this.loading = false
+        }
+    },
+
+    // 🔹 Buscar usuário por ID
+    async getUserById(userId) {
+        if (!userId) return null
+        // busca lista atualizada
+
+        this.loading = true
+        this.error = null
+        try {
+            // Busca no backend
+            const { data } = await api.get(`/user/${userId}`)
+            
+            // Atualiza o estado local, se quiser
+            this.user = data || null
+
+            console.log('Usuário encontrado por ID:', this.user)
+            return this.user
+        } catch (err) {
+            this.error = err.response?.data?.message || 'Erro ao buscar usuário'
+            console.error(err)
+            return null
+        } finally {
+            this.loading = false
+        }
+    },
+
       // 🔹 Buscar todos os perfis
     async getAllProfiles() {
       this.loading = true
@@ -40,6 +96,7 @@ export const useStore = defineStore('profile', {
         this.loading = false
       }
     },
+    
     //logar com usuario
     async logar(userLoad) {
         // validação de entrada
@@ -47,9 +104,6 @@ export const useStore = defineStore('profile', {
             console.error("Dados de login inválidos:", userLoad);
             return;
         }
-
-        // busca lista atualizada
-        await this.getAllProfiles();
 
         // busca segura (evita undefined)
         const foundUser = this.users.find(

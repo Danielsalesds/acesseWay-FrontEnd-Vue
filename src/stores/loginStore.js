@@ -24,11 +24,15 @@ export const useAuthStore = defineStore('auth', {
 
       const data = await res.json()
 
-      this.user = data || null // guarda o usuário criado (apenas se precisar exibir algo)
+      //this.user = data || null // guarda o usuário criado (apenas se precisar exibir algo)
       console.log('Usuário Logado:', data)
 
       this.token = data.token
+      
       localStorage.setItem('token', data.token)
+      // Buscar os dados do usuário logo após logar
+      await this.getUserProfile()
+
 
       } catch (error) {
         this.error = 'Erro ao tentar fazer login!'
@@ -41,10 +45,13 @@ export const useAuthStore = defineStore('auth', {
     async getUserProfile() {
       if (!this.token) throw new Error('Sem token, faça login primeiro.')
 
-      const res = await fetch('https://api.exemplo.com/profile', {
+      const res = await fetch('https://user-ms-yb1o.onrender.com/user', {
         headers: { 'Authorization': `Bearer ${this.token}` }
       })
-      this.user = await res.json()
+      console.log('Com token!', this.token)
+      const data = await res.json()
+      this.user = data.content
+      console.log('User: ', this.user)
     },
 
 

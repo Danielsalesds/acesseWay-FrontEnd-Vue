@@ -5,6 +5,7 @@ import { createPinia } from 'pinia';
 import axios from 'axios';
 import { API_URL } from './config';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import 'leaflet/dist/leaflet.css';
 
 axios.defaults.baseURL = API_URL;
 
