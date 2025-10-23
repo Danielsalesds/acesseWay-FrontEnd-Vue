@@ -6,7 +6,7 @@
       <LeftSidebar />
       
       <!-- Mostra feed ou mapa -->
-      <component :is="showMap ? 'MapsView' : 'TheFeed'" />
+      <component :is="showMap ? 'EstablishmentForm' : 'TheFeed'" />
 
       <RightSidebar />
     </main>
@@ -18,7 +18,7 @@ import LeftSidebar from '../components/LeftSidebar.vue'
 import TheFeed from '../components/TheFeed.vue'
 import RightSidebar from '../components/RightSidebar.vue'
 import TheHeader from '../components/TheHeader.vue'
-import MapsView from '../components/MapsView.vue'
+import EstablishmentForm from '../components/EstablishmentForm.vue'
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
     TheFeed,
     RightSidebar,
     TheHeader,
-    MapsView
+    EstablishmentForm,
   },
   data() {
     return {
