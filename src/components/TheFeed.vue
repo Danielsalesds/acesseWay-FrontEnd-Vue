@@ -73,46 +73,90 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from "@/stores/user";
 
 export default {
   name: 'FeedPosts',
   data() {
     return {
-      posts: []
+      posts: [],
+      novoPost: ''
     }
   },
+
+  created() {
+    this.userStore = useUserStore(); // 🔹 inicializa o store aqui
+  },
+  
   async mounted() {
     try {
-      const response = await axios.get('http://localhost:8082/api/posts')
+      const response = await axios.get('https://post-ms.onrender.com/api/posts')
       this.posts = response.data
     } catch (error) {
       console.error('Erro ao buscar posts:', error)
     }
   },
   methods: {
-    formatDate(dateString) {
-      if (!dateString) return ''
-      const date = new Date(dateString)
-      return date.toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
+  formatDate(dateString) {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  },
+
+  async criarPost() {
+    const userStore = useUserStore();
+
+    if (!this.novoPost || !this.novoPost.trim()) {
+      alert("Digite algo antes de postar!");
+      return;
+    }
+
+    if (!userStore.id) {
+      alert("Usuário não logado!");
+      return;
+    }
+
+    try {
+      const novo = {
+        autorId: userStore.id,
+        conteudo: this.novoPost,
+      }
+      await axios.post("http://localhost:8082/api/posts", novo)
+      this.novoPost = ""
+      await this.carregarPosts()
+    } catch (error) {
+      console.error("Erro ao criar post:", error)
     }
   },
 
   async curtirPost(postId) {
-      try {
-        await axios.post(
-          `http://localhost:8080/api/posts/${postId}/curtir?usuarioId=${this.usuarioId}`
-        );
-        await this.carregarPosts();
-      } catch (error) {
-        console.error("Erro ao curtir post:", error);
-      }
-    },
+    const userStore = useUserStore();
+
+    try {
+      await axios.post(
+        `http://localhost:8082/api/posts/${postId}/curtir?usuarioId=${userStore.id}`
+      )
+      await this.carregarPosts()
+    } catch (error) {
+      console.error("Erro ao curtir post:", error)
+    }
+  },
+
+  async carregarPosts() {
+    try {
+      const response = await axios.get('http://localhost:8082/api/posts')
+      this.posts = response.data
+    } catch (error) {
+      console.error('Erro ao buscar posts:', error)
+    }
+  }
+}
 }
 </script>
 
@@ -246,17 +290,5 @@ export default {
 }
 .btn:hover {
   background-color: #0056b3;
-}
-/* Responsividade */
-@media (max-width: 1024px) {
-  .feed {
-    padding: 10px 15px;
-  }
-}
-
-@media (max-width: 768px) {
-  .feed {
-    padding: 10px;
-  }
 }
 </style>
