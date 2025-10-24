@@ -28,7 +28,7 @@
             </select>
           </div>
         </div>
-          <h2>TESTE</h2>
+          
         <!-- Gênero -->
         <fieldset class="gender">
           <legend>Gênero</legend>

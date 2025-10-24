@@ -96,6 +96,10 @@
           <label for="email">Email (não editável)</label>
           <input id="email" type="email" v-model="form.email" disabled />
         </div>
+        <div class="form-group disabled-fields">
+          <label for="text">ID (não editável)</label>
+          <input id="id" type="text" v-model="form.id" disabled />
+        </div>
 
         <div class="form-group disabled-fields">
           <label for="password">Senha (não editável)</label>
@@ -110,11 +114,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-//import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/loginStore'
 import { useStore } from '@/stores/signupStore'
+import { useRouter } from 'vue-router' 
 
-const store = useStore()
-//const route = useRoute()
+const router = useRouter()
+
+const storeUser = useStore()
+const store = useAuthStore()
+
 
 const defaultImage = 'https://via.placeholder.com/120?text=Perfil'
 
@@ -124,6 +132,7 @@ const calend = ref({
 })
 
 const form = ref({
+  id: '',
   firstName: '',
   lastName: '',
   birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
@@ -134,10 +143,11 @@ const form = ref({
 })
 // route.params.id
 onMounted(async () => {
-  const user = await store.getUserById('7c4e575c-3fb2-4d1a-aa12-59a8075283c9')
+  const user = store.user
   if (user) {
     const [year, month, day] = user.birthDate.split('-').map(Number)
     form.value = {
+      id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       birthDate: { day, month, year },
@@ -152,11 +162,12 @@ onMounted(async () => {
 function handleImage(e) {
   const file = e.target.files[0]
   if (file) {
-    const reader = new FileReader()
-    reader.onload = () => {
-      form.value.imageUrl = reader.result
-    }
-    reader.readAsDataURL(file)
+    form.value.imageUrl = file
+    // const reader = new FileReader()
+    // reader.onload = () => {
+    //   form.value.imageUrl = reader.result
+    // }
+    // reader.readAsDataURL(file)
   }
 }
 
@@ -169,8 +180,10 @@ async function handleUpdate() {
     birthDate: birthDateString
   }
 
-  await store.updateProfile('7c4e575c-3fb2-4d1a-aa12-59a8075283c9', payload)
+  await storeUser.updateProfile(store.userId, payload)
   alert('Perfil atualizado com sucesso!')
+  router.push('/home')
+
 }
 </script>
 

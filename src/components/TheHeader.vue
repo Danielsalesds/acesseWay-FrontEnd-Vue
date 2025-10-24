@@ -127,8 +127,6 @@ import UserMenu from '../components/TheDropdownProfile.vue'
   color: #2d88ff;
 }
 
-
-
 /* ====== DIREITA: ÍCONES ====== */
 .header-right {
   display: flex;
