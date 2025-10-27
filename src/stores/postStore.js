@@ -37,11 +37,35 @@ export const usePostStore = defineStore('post', {
         this.loading = false
       }
     },
-   
+   //lista de posts
     async getAllPosts() {
       const { data } = await api.get('https://post-ms.onrender.com/api/posts')
       this.posts = data
       console.log('post:  ', data)
+    },
+    //likes de users
+    async likePost(postId) {
+      this.loading = true
+      this.error = null
+
+      const profileStore = userProfileStore()
+      //Verificar se user esta carregado se não carrega-lo no store
+      if (!profileStore.user) {
+        profileStore.getUserProfile()
+        console.error("Usuário não logado!")
+        return
+      }
+       const userId = profileStore.userId
+      try {
+        await api.post(`https://post-ms.onrender.com/api/posts/${postId}/curtir?usuarioId=${userId}`)
+        await this.getAllPosts()
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Erro ao cadastrar Post'
+        console.error(err)
+      } finally {
+        this.loading = false
+      }
     }
   }
+  
 })

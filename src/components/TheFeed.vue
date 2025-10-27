@@ -1,34 +1,45 @@
 <template>
   <section class="feed">
     <!-- Criador de post -->
-    <div class="post post-creator">
-      <ThePostCreator />
-    </div>
+    <ThePostCreator />
 
-    <!-- Lista de posts -->
-    <div v-for="post in posts" :key="post.id" class="post">
-      <h3>{{user.firstName}}</h3>
-      <p>{{ post.conteudo }}</p>
-    </div>
+    <!-- Posts -->
+    <ThePost
+      v-for="post in posts"
+      :key="post.id"
+      :post="post"
+      @like="handleLike(post.id)"
+    />
+
+    <p v-if="!loading && posts.length === 0" class="empty">Nenhum post ainda 😢</p>
   </section>
 </template>
 
 <script setup>
 import ThePostCreator from '../components/ThePostCreator.vue'
 //import { ref } from 'vue'
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { usePostStore as userPost } from '@/stores/postStore'
-import { useAuthStore } from '@/stores/loginStore'
+//import { useAuthStore } from '@/stores/loginStore'
+import ThePost from '@/components/ThePost.vue'
 
-const store = useAuthStore()
-const user = store.user
+
+//const store = useAuthStore()
+//const user = store.user
 
 const userPosts = userPost()
+const loading = computed(() => userPosts.loading)
+const posts = computed(() => userPosts.posts)
+
+
 // Lista de posts reativa
-const posts = userPosts.posts
+//const posts = userPosts.posts
 onMounted(async () => {
   await userPosts.getAllPosts()
 })
+function handleLike(postId) {
+  userPosts.likePost(postId)
+}
 </script>
 
 
@@ -40,23 +51,35 @@ onMounted(async () => {
   overflow-y: auto;
   height: calc(100vh - 60px);
   padding: 20px 0;
+  background-color: #18191a; /* só pra deixar o fundo consistente */
 }
 
-/* Todos os cards do feed (inclusive o criador) terão o mesmo tamanho */
+/* Define um tamanho padrão e centralizado para todos os cards */
+.feed > * {
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+}
+
+/* Espaçamento entre o criador e os posts */
+.feed > * + * {
+  margin-top: 20px; /* distância entre os cards */
+}
+
+/* Aparência dos cards de post */
 .post {
   background-color: #242526;
   border-radius: 10px;
   padding: 15px;
-  margin-bottom: 15px;
-  width: 100%;
-  max-width: 600px; /* controla a largura centralizada */
-  box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Deixa o criador sem margens internas extras */
+/* Estilo especial pro criador (opcional) */
 .post-creator {
-  padding: 0;
-  background: none;
+  background-color: #242526;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* Ajuste de rolagem suave */
@@ -70,7 +93,7 @@ onMounted(async () => {
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .post {
+  .feed > * {
     max-width: 95%;
   }
 }

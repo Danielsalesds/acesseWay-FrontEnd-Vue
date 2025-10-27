@@ -56,6 +56,7 @@
             class="publish-btn"
             :class="{ disabled: !postText.trim() }"
             :disabled="!postText.trim()"
+            @click="publishPost"
           >
             Publicar
           </button>
@@ -68,24 +69,61 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from '@/stores/loginStore'
+import { usePostStore } from '@/stores/postStore' // ✅ importa o store de posts
 
+const postStores = usePostStore()
 const store = useAuthStore()
 const user = store.user
 
 const openModal = ref(false);
 const postText = ref("");
 const fileInput = ref(null)
+const selectedFile = ref(null)
+
+// Quando o usuário escolhe um arquivo
+const handleFileChange = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+  selectedFile.value = file
+  console.log('Arquivo selecionado:', file)
+}
 
 const triggerFileInput = () => {
   fileInput.value.click() //  dispara o input oculto
 }
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0]
-  if (!file) return
+// publicar o post
+const publishPost = async () => {
+  if (!postText.value.trim()) return
 
-  console.log('Arquivo selecionado:', file)
+// Gerar data atual no formato ISO
+  const dataAtual = new Date().toISOString()
+
+  const newPost = {
+    conteudo: postText.value,
+    imagemUrl: null,
+    videoUrl: null,
+    dataCriacao: dataAtual
+  }
+  // Se o usuário selecionou um arquivo, define o tipo
+  if (selectedFile.value) {
+    const file = selectedFile.value
+    if (file.type.startsWith("image/")) {
+      newPost.imagemUrl = URL.createObjectURL(file)
+    } else if (file.type.startsWith("video/")) {
+      newPost.videoUrl = URL.createObjectURL(file)
+    }
+  }
+
+  // Se quiser futuramente enviar imagem, você pode usar FormData aqui
+  await postStores.createPost(user.id, newPost)
+
+  // Limpa tudo após publicar
+  postText.value = ""
+  selectedFile.value = null
+  openModal.value = false
 }
+
 </script>
 
 <style scoped>
