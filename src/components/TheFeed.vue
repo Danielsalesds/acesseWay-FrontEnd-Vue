@@ -7,33 +7,30 @@
 
     <!-- Lista de posts -->
     <div v-for="post in posts" :key="post.id" class="post">
-      <h3>{{ post.author }}</h3>
-      <p>{{ post.content }}</p>
+      <h3>{{user.firstName}}</h3>
+      <p>{{ post.conteudo }}</p>
     </div>
   </section>
 </template>
 
-<script>
+<script setup>
 import ThePostCreator from '../components/ThePostCreator.vue'
+//import { ref } from 'vue'
+import { onMounted } from 'vue'
+import { usePostStore as userPost } from '@/stores/postStore'
+import { useAuthStore } from '@/stores/loginStore'
 
+const store = useAuthStore()
+const user = store.user
 
-export default {
-  components: {
-    ThePostCreator,
-  },
-
-  data() {
-    return {
-      posts: [
-        { id: 1, author: "Daniel Sales", content: "Meu primeiro post!" },
-        { id: 2, author: "João", content: "Olá, bom dia!" },
-        { id: 3, author: "Grazy", content: "Olá!" },
-        { id: 3, author: "Fernanda", content: "Bom dia!" },
-      ]
-    }
-  }
-}
+const userPosts = userPost()
+// Lista de posts reativa
+const posts = userPosts.posts
+onMounted(async () => {
+  await userPosts.getAllPosts()
+})
 </script>
+
 
 <style scoped>
 .feed {
