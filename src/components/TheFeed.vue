@@ -39,6 +39,7 @@ onMounted(async () => {
 })
 function handleLike(postId) {
   userPosts.likePost(postId)
+
 }
 </script>
 
@@ -47,9 +48,10 @@ function handleLike(postId) {
 .feed {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 16px;
   overflow-y: auto;
   height: calc(100vh - 60px);
+
   padding: 20px 0;
   background-color: #18191a; /* só pra deixar o fundo consistente */
 }
@@ -82,14 +84,61 @@ function handleLike(postId) {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Ajuste de rolagem suave */
-.feed::-webkit-scrollbar {
-  width: 8px;
+.likes {
+  color: #b0b3b8;
+  margin-top: 8px;
+  font-size: 0.9rem;
 }
-.feed::-webkit-scrollbar-thumb {
+
+.comments {
+  margin-top: 12px;
+  background-color: #3a3b3c;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.comments h4 {
+  color: #e4e6eb;
+  margin-bottom: 6px;
+}
+
+.comments ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.comments li {
+  color: #b0b3b8;
+  margin-bottom: 6px;
+}
+
+.empty {
+  color: #888;
+  text-align: center;
+  margin-top: 30px;
+  font-style: italic;
+}
+
+/* Novo post */
+.new-post {
+  background-color: #242526;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.new-post-textarea {
+  width: 100%;
+  height: 80px;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  resize: none;
   background: #3a3b3c;
-  border-radius: 4px;
+  color: #e4e6eb;
+  margin-bottom: 10px;
 }
+
 
 /* Responsividade */
 @media (max-width: 768px) {
