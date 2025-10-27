@@ -26,7 +26,7 @@ export const usePostStore = defineStore('post', {
         //adicionar ID do autor do post
         const postWithAuthor = { ...newPost, autorId: userId}
         this.posts.push(postWithAuthor)
-        const { data } = await api.post('https://post-ms.onrender.com/api/posts', postWithAuthor,{ withCredentials: true })
+        const { data } = await api.post('https://post-ms.onrender.com/api/posts')
         this.posts = data || null
         console.log('Post cadastrado:', data)
 
