@@ -127,7 +127,7 @@ export default {
         autorId: userStore.id,
         conteudo: this.novoPost,
       }
-      await axios.post("http://localhost:8082/api/posts", novo)
+      await axios.post("https://post-ms.onrender.com/api/posts", novo)
       this.novoPost = ""
       await this.carregarPosts()
     } catch (error) {
