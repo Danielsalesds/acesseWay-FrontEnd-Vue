@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
+import { useUserStore } from './user' // 🔹 importa o store de usuário
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({ 
+  state: () => ({
     user: null,
     loading: false,
     error: null,
@@ -30,6 +31,16 @@ export const useAuthStore = defineStore('auth', {
         // Buscar os dados do usuário logo após logar
         //await this.getUserProfile(data.id)
 
+        // 🔹 Também salva no user store
+        const userStore = useUserStore()
+        userStore.setUser({
+          id: data.id,
+          email: data.email,
+          role: data.role
+        })
+
+        console.log('Usuário salvo no userStore:', userStore)
+
       } catch (error) {
         this.error = 'Erro ao tentar fazer login!'
       } finally {
@@ -49,6 +60,9 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
+      const userStore = useUserStore()
+      userStore.clearUser() // 🔹 limpa também o user store
+
       this.token = null
       this.user = null
       this.userId = null

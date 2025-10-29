@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { api } from '@/assets/api/axios'
 //import { useRouter } from 'vue-router' 
 import { useAuthStore } from '@/stores/loginStore'
+import axios from 'axios'
 
 
 export const useStore = defineStore('profile', {
@@ -9,7 +10,8 @@ export const useStore = defineStore('profile', {
     user: null,     // guarda o usuário criado (opcional)
     users:[],
     loading: false,
-    error: null
+    error: null,
+    searchedName: "",
   }),
 
   actions: {
@@ -31,9 +33,6 @@ export const useStore = defineStore('profile', {
     },
     // 🔹 Atualizar usuário pelo ID
     async updateProfile(userId, updatedData) {
-      console.log(">>>> ID do usuário =", userId)
-
-      
       const authStore = useAuthStore() //  acessa token do outro store
       //carregar useAuthStore 
       if (!authStore.user) {
@@ -55,8 +54,22 @@ export const useStore = defineStore('profile', {
 
       this.loading = true
       this.error = null
-
+      
       try {
+        console.log(">>>> ID do usuário =", userId)
+
+        // Faz o Upload da imagem para o Cloudinary e atribui a url para o usuário que vai ser atualizado.
+        let formData =  new FormData()
+        formData.append("file",updatedData.imageUrl)
+        let response = await axios.post("https://post-ms.onrender.com/api/upload", formData,{
+          headers: {
+              Authorization: `Bearer ${token}`,
+          }
+        });
+        let cloudinaryUrl = response.data
+        updatedData.imageUrl = cloudinaryUrl.url
+
+
         //  Envia o token no header Authorization
         const { data } = await api.put(`/user/${userId}`, updatedData, {
           headers: {
@@ -112,10 +125,12 @@ export const useStore = defineStore('profile', {
 
       // 🔹 Buscar todos os perfis
     async getAllProfiles() {
+      const name = this.searchedName
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.get('/user?size=30')
+        const { data } = await api.get(`/user?name=${name}`)
+        console.log( 'Searched: '+ this.searchedName)
         this.users = data.content || []
         console.log('Perfis encontrados-->>', this.users)
       } catch (err) {

@@ -4,7 +4,7 @@
     <header class="post-header">
       <div class="author-section">
         <img
-          src="https://via.placeholder.com/40"
+          :src="post.autorFoto "
           alt="Foto do autor"
           class="author-avatar"
         />
@@ -52,7 +52,10 @@
 <script setup>
 
 /* eslint-disable no-undef */
-defineProps({ post: Object })
+defineProps({ post: Object, user: Object, })
+
+//const defaultImage = 'https://via.placeholder.com/120?text=Perfil'
+
 
 function formatDate(date) {
   return new Date(date).toLocaleString('pt-BR', {

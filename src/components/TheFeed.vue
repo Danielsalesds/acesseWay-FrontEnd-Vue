@@ -10,6 +10,7 @@
       v-for="post in posts || []"
       :key="post.id"
       :post="post"
+      :user="user"
       @like="handleLike(post.id)"
     />
   </div>
@@ -29,7 +30,10 @@ import { onMounted, computed } from 'vue'
 import { usePostStore as userPost } from '@/stores/postStore'
 //import { useAuthStore } from '@/stores/loginStore'
 import ThePost from '@/components/ThePost.vue'
+import { useAuthStore } from '@/stores/loginStore'
 
+const store = useAuthStore()
+const user = store.user
 
 //const store = useAuthStore()
 //const user = store.user

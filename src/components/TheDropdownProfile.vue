@@ -5,8 +5,9 @@
     </button>
 
     <div v-if="menuOpen" class="dropdown">
-        <p class="user-name" >{{user.firstName}}</p>
-        <p class="user-email">{{user.email}}</p>
+        <img :src="user.imageUrl" alt="profile" class="profile-pic" />
+        <p class="user-name" >Nome: {{user.firstName}}</p>
+        <p class="user-email">Email: {{user.email}}</p>
         <hr />
         <button @click="goToEditProfile">Editar perfil</button>
         <button @click="logout">Sair</button>
@@ -79,6 +80,11 @@ function logout() {
   text-align: left;
   cursor: pointer;
   transition: color 0.2s;
+}
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .dropdown button:hover {

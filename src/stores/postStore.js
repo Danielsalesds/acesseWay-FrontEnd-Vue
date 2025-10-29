@@ -31,10 +31,16 @@ export const usePostStore = defineStore('post', {
         //  Atualizar cache de autores
         this.authorsCache = this.authorsCache || {}
         const autorNome = `${profileStore.user.firstName || ''} ${profileStore.user.lastName || ''}`.trim()
-        this.authorsCache[userId] = autorNome || 'Usuário sem nome'
+        this.authorsCache[userId] = {
+          nome: autorNome || 'Usuário sem nome',
+          fotoUrl: profileStore.user.fotoUrl || 'https://via.placeholder.com/40'
+        }
 
         //  Adicionar o post já enriquecido com o nome
-        const enrichedPost = { ...data, autorNome: this.authorsCache[userId] }
+        const enrichedPost = { ...data, 
+          autorNome: this.authorsCache[userId].nome,
+          autorFoto: this.authorsCache[userId].fotoUrl 
+        }
         this.posts.push(enrichedPost)
         this.posts.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
 
@@ -65,15 +71,18 @@ export const usePostStore = defineStore('post', {
       }
 
       try {
+        // 1️⃣ Buscar posts e ordenar por data (mais recente primeiro)
         const { data } = await api.get('https://post-ms.onrender.com/api/posts')
-        this.posts = data.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
+        const sortedPosts = data.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
 
-        // Enriquecer os posts com o nome do autor, usando cache
+        // 2️⃣ Enriquecer os posts com informações do autor
         const enrichedPosts = await Promise.all(
-          data.map(async (post) => {
-            let autorNome = this.authorsCache[post.autorId]
+          sortedPosts.map(async (post) => {
+            // Tenta pegar info do cache
+            let autorInfo = this.authorsCache[post.autorId]
 
-            if (!autorNome) {
+            // Se não existir no cache, buscar na API
+            if (!autorInfo) {
               try {
                 const { data: userData } = await api.get(
                   `https://user-ms-yb1o.onrender.com/user/${post.autorId}`,
@@ -83,27 +92,43 @@ export const usePostStore = defineStore('post', {
                     }
                   }
                 )
-                autorNome = `${userData.firstName || ''} ${userData.lastName || ''}`.trim()
-                
 
-                this.authorsCache[post.autorId] = autorNome
+                autorInfo = {
+                  nome: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Usuário sem nome',
+                  fotoUrl: userData.imageUrl || 'https://via.placeholder.com/40'
+                }
+
+                // Salva no cache
+                this.authorsCache[post.autorId] = autorInfo
               } catch (err) {
-                autorNome = 'Usuário desconhecido'
                 console.warn(`Erro ao buscar autor ${post.autorId}`, err)
+                 autorInfo = {
+                  nome: 'Usuário desconhecido',
+                  fotoUrl: 'https://via.placeholder.com/40'
+                }
+                this.authorsCache[post.autorId] = autorInfo
               }
             }
 
-            return { ...post, autorNome }
+            // Retorna o post enriquecido com nome e foto
+            return {
+              ...post,
+              autorNome: autorInfo.nome,
+              autorFoto: autorInfo.fotoUrl
+            }
           })
         )
+
+        // 3️⃣ Atualiza os posts já enriquecidos
         this.posts = enrichedPosts
       } catch (err) {
         this.error = err.response?.data?.message || 'Erro ao carregar posts'
-        console.error(err)
+        console.error('Erro ao carregar posts:', err)
       } finally {
         this.loading = false
       }
     },
+
    //lista de posts
     async getAllPosts() {
       this.loading = true

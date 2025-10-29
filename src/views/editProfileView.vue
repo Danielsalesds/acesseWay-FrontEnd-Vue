@@ -162,11 +162,12 @@ onMounted(async () => {
 function handleImage(e) {
   const file = e.target.files[0]
   if (file) {
-    const reader = new FileReader()
-    reader.onload = () => {
-      form.value.imageUrl = reader.result
-    }
-    reader.readAsDataURL(file)
+    form.value.imageUrl = file
+    // const reader = new FileReader()
+    // reader.onload = () => {
+    //   form.value.imageUrl = reader.result
+    // }
+    // reader.readAsDataURL(file)
   }
 }
 
