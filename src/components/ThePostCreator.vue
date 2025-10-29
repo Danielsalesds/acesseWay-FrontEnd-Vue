@@ -124,6 +124,7 @@ const publishPost = async () => {
   openModal.value = false
 }
 
+
 </script>
 
 <style scoped>

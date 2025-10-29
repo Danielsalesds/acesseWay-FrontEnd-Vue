@@ -9,7 +9,7 @@
           class="author-avatar"
         />
         <div class="author-info">
-          <h3 class="author-name">Autor #{{ post.autorId }}</h3>
+          <h3 class="author-name">{{ post.autorNome }}</h3>
           <small class="post-date">{{ formatDate(post.dataCriacao) }}</small>
         </div>
       </div>
@@ -42,7 +42,7 @@
 
     <!-- Rodapé: Ações -->
     <footer class="post-actions">
-      <button @click="handleLike(post.id)" class="action-btn">👍 Curtir</button>
+      <button  class="action-btn">👍 Curtir</button>
       <button class="action-btn">💬 Comentar</button>
       <button class="action-btn">↗️ Compartilhar</button>
     </footer>
@@ -64,9 +64,7 @@ function formatDate(date) {
   })
 }
 
-function handleLike(id) {
-  console.log("Curtir post", id)
-}
+
 </script>
 
 <style scoped>

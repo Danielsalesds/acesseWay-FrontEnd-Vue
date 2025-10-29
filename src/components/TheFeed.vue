@@ -4,12 +4,19 @@
     <ThePostCreator />
 
     <!-- Posts -->
+    <!-- Só renderiza os posts se não estiver carregando -->
+    <div v-if= "posts">
     <ThePost
-      v-for="post in posts"
+      v-for="post in posts || []"
       :key="post.id"
       :post="post"
       @like="handleLike(post.id)"
     />
+  </div>
+
+  <div v-else class="text-center text-gray-400 p-4">
+    Carregando posts...
+  </div>
 
     <p v-if="!loading && posts.length === 0" class="empty">Nenhum post ainda 😢</p>
   </section>
@@ -35,12 +42,12 @@ const posts = computed(() => userPosts.posts)
 // Lista de posts reativa
 //const posts = userPosts.posts
 onMounted(async () => {
-  await userPosts.getAllPosts()
-})
-function handleLike(postId) {
-  userPosts.likePost(postId)
+   if (posts.value.length === 0) {
+    await userPosts.postGetAll()
+  }
 
-}
+})
+
 </script>
 
 
