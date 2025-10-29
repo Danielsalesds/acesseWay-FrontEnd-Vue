@@ -5,8 +5,16 @@
       <div class="logo">Access Way</div>
       <div class="search-bar">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Pesquisar na Way Plus" />
+        <input type="text" placeholder="Pesquisar na Way Plus" v-model="store.searchedName"
+          @focus="openDropdown" @keydown.enter="search"
+        />
+        <!-- <button type="submit" @click="search">Buscar</button> -->
       </div>
+      <ListUsers
+        v-show="isDropdownVisible"
+        :users="store.users"
+        @close="closeDropdown"
+      />
     </div>
 
     <!-- CENTRO: Ícones de navegação -->
@@ -33,16 +41,27 @@
 
 <script setup>
 import UserMenu from '../components/TheDropdownProfile.vue'
-
+import ListUsers from './ListUsers.vue';
 //import { storeToRefs } from 'pinia'
-//import { useStore } from '@/stores/signupStore'
-
-
-//const store = useStore()
-
+import { useStore } from '@/stores/signupStore'
+import { ref } from 'vue'
+const store = useStore()
 // Cria refs reativas para os estados do store
 //const { user } = storeToRefs(store)
+const isDropdownVisible = ref(false)
 
+const openDropdown = () => {
+  isDropdownVisible.value = true
+}
+
+const closeDropdown = () => {
+  isDropdownVisible.value = false
+}
+
+const search = async () => {
+  await store.getAllProfiles()
+  openDropdown() 
+}
 </script>
 
 <style scoped>

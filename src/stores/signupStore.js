@@ -10,7 +10,8 @@ export const useStore = defineStore('profile', {
     user: null,     // guarda o usuário criado (opcional)
     users:[],
     loading: false,
-    error: null
+    error: null,
+    searchedName: "",
   }),
 
   actions: {
@@ -124,10 +125,12 @@ export const useStore = defineStore('profile', {
 
       // 🔹 Buscar todos os perfis
     async getAllProfiles() {
+      const name = this.searchedName
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.get('/user?size=30')
+        const { data } = await api.get(`/user?name=${name}`)
+        console.log( 'Searched: '+ this.searchedName)
         this.users = data.content || []
         console.log('Perfis encontrados-->>', this.users)
       } catch (err) {
