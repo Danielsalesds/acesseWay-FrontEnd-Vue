@@ -47,7 +47,7 @@ export default {
       }
     },
     showMap() {
-      // mostra o mapa (sem precisar dar duplo clique)
+      // mostra o mapa (sem precisar dar duplo clique)>>>
       this.currentView = 'EstablishmentMap'
     },
     setView(view) {
