@@ -1,6 +1,15 @@
 <template>
   <aside class="left-sidebar">
     <ul>
+      <li @click="$emit('change-view', 'feed')">
+        <i class="fas fa-home"></i> Feed
+      </li>
+      <li @click="$emit('change-view', 'form')">
+        <i class="fas fa-plus-square"></i> Novo Estabelecimento
+      </li>
+      <li @click="$emit('change-view', 'map')">
+        <i class="fas fa-map-marked-alt"></i> Mapa
+      </li>
       <li><i class="fas fa-user-friends"></i> Amigos</li>
       <li><i class="fas fa-video"></i> Vídeos</li>
       <li><i class="fas fa-store"></i> Marketplace</li>
@@ -36,17 +45,5 @@
 .left-sidebar li:hover {
   background-color: #3a3b3c;
   border-radius: 8px;
-}
-/* ===== Responsividade ===== */
-@media (max-width: 1024px) {
-  .left-sidebar {
-    width: 180px;
-  }
-}
-
-@media (max-width: 768px) {
-  .left-sidebar {
-    display: none; /* Sidebar some em telas pequenas */
-  }
 }
 </style>
