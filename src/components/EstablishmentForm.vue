@@ -53,13 +53,15 @@ async function submit() {
   load.value = true
   if (!form.latitude || !form.longitude) { alert('Informe a localização ou use o botão "Abrir mapa".'); load.value = false; return }
   try {
-    await axios.post('http://localhost:8085/establishment-request', {
+    const response = await axios.post('https://establishment-ms.onrender.com/establishment-request', {
       ...form,
       cnpj: form.cnpj.replace(/\D/g, ''),
       phone: form.phone.replace(/\D/g, ''),
       address: { ...form.address, zipCode: (form.address.zipCode || '').replace(/\D/g, '') }
     })
+    console.log('Resposta da API:', response.data)
     alert('Cadastrado com sucesso!'); reset()
+
   } catch (e) { alert('Erro: ' + (e.response?.data?.message || e.message)) }
   finally { load.value = false }
 }

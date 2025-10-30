@@ -1,12 +1,13 @@
 <template>
   <div class="layout-home">
-    <!-- Passa função toggleMap para o Header -->
-    <TheHeader @toggle-map="toggleMap" />
+    <!-- Header controla o modo -->
+    <TheHeader @toggle-map="setView('map')" />
+
     <main class="content">
-      <LeftSidebar />
-      
-      <!-- Mostra feed ou mapa -->
-      <component :is="showMap ? 'EstablishmentForm' : 'TheFeed'" />
+      <LeftSidebar @change-view="setView" />
+
+      <!-- Renderiza dinamicamente o conteúdo central -->
+      <component :is="currentView" />
 
       <RightSidebar />
     </main>
@@ -19,6 +20,7 @@ import TheFeed from '../components/TheFeed.vue'
 import RightSidebar from '../components/RightSidebar.vue'
 import TheHeader from '../components/TheHeader.vue'
 import EstablishmentForm from '../components/EstablishmentForm.vue'
+import EstablishmentMap from '../components/EstablishmentMap.vue'
 
 export default {
   components: {
@@ -27,33 +29,40 @@ export default {
     RightSidebar,
     TheHeader,
     EstablishmentForm,
+    EstablishmentMap,
   },
   data() {
     return {
-      showMap: false
+      currentView: 'TheFeed', // começa com o feed
     }
   },
   methods: {
-    toggleMap() {
-      this.showMap = !this.showMap
-    }
+    setView(view) {
+      // troca entre os modos: feed, form, map
+      this.currentView =
+        view === 'feed'
+          ? 'TheFeed'
+          : view === 'form'
+          ? 'EstablishmentForm'
+          : 'EstablishmentMap'
+    },
   },
- 
 }
 </script>
 
-
 <style scoped>
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* evita que a página role */
+  overflow: hidden;
 }
+
 .layout-home {
   background-color: #18191a;
   color: #e4e6eb;
   height: 100vh;
-  overflow: hidden; /* evita scroll global */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -63,11 +72,10 @@ html, body {
   display: grid;
   grid-template-columns: 300px 1fr 300px;
   gap: 20px;
-  padding-top: 60px; /* altura do header fixo */
-  height: calc(100vh - 60px); /* altura restante */
+  padding-top: 60px;
+  height: calc(100vh - 60px);
 }
 
-/* As 3 colunas com scroll próprio */
 .content > * {
   overflow-y: auto;
   height: 100%;
@@ -75,7 +83,6 @@ html, body {
   scrollbar-color: #3a3b3c #18191a;
 }
 
-/* Responsividade */
 @media (max-width: 1100px) {
   .content {
     grid-template-columns: 80px 1fr;
