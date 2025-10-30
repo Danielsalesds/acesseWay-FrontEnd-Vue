@@ -19,10 +19,12 @@
 
     <!-- CENTRO: Ícones de navegação -->
     <nav class="header-center">
-      <button class="nav-btn active"><i class="fas fa-home"></i></button>
+      <button class="nav-btn" @click="$emit('show-home')">
+        <i class="fas fa-home"></i>
+      </button>
       <button class="nav-btn"><i class="fas fa-users"></i></button>
       <button class="nav-btn"><i class="fas fa-briefcase"></i></button>
-     <button class="icon-btn" @click="$emit('toggle-map')">
+     <button class="icon-btn" @click="$emit('show-map')">
   <i class="fas fa-map"></i>
 </button>
     </nav>

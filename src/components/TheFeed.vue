@@ -32,6 +32,7 @@
 </template>
 
 <script setup>
+/* global defineExpose */
 import ThePostCreator from '../components/ThePostCreator.vue'
 //import { ref } from 'vue'
 import { onMounted, computed, ref } from 'vue'
@@ -54,6 +55,10 @@ const posts = computed(() => userPosts.posts)
 
 const selectedPost = ref(null)
 
+async function reloadPosts() {
+  await userPosts.postGetAllCp()
+}
+
 // Lista de posts reativa
 //const posts = userPosts.posts
 onMounted(async () => {
@@ -73,7 +78,15 @@ function closeComments() {
 async function handleLike(postId) {
   await userPosts.likePost(postId)
 }
+async function scrollToTop() {
+  const feedElement = document.querySelector('.feed')
+  if (feedElement) {
+    feedElement.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
+// expõe a função para o componente pai (Home.vue) poder chamar
+defineExpose({ reloadPosts, scrollToTop })
 </script>
 
 

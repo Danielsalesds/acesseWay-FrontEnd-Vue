@@ -1,12 +1,12 @@
 <template>
   <div class="layout-home">
     <!-- Passa função toggleMap para o Header -->
-    <TheHeader @toggle-map="toggleMap" />
+    <TheHeader @show-map="showMap" @show-home="showFeed"  />
     <main class="content">
       <LeftSidebar />
       
       <!-- Mostra feed ou mapa -->
-      <component :is="showMap ? 'MapsView' : 'TheFeed'" />
+      <component :is="currentView" ref="feedRef" />
 
       <RightSidebar />
     </main>
@@ -30,12 +30,23 @@ export default {
   },
   data() {
     return {
-      showMap: false
+      currentView: 'TheFeed' // inicia no feed
     }
   },
   methods: {
-    toggleMap() {
-      this.showMap = !this.showMap
+    showFeed() {
+      if (this.currentView === 'TheFeed') {
+        // já está no feed → apenas recarrega
+        this.$refs.feedRef?.reloadPosts?.()
+        this.$refs.feedRef?.scrollToTop?.()
+      } else {
+        // troca para o feed
+        this.currentView = 'TheFeed'
+      }
+    },
+    showMap() {
+      // mostra o mapa (sem precisar dar duplo clique)
+      this.currentView = 'MapsView'
     }
   },
  
