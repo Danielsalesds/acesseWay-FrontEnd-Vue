@@ -42,8 +42,8 @@
 
     <!-- Rodapé: Ações -->
     <footer class="post-actions">
-      <button  class="action-btn">👍 Curtir</button>
-      <button class="action-btn">💬 Comentar</button>
+      <button class="action-btn" @click="$emit('like', post.id)" :class="{ liked: post.curtido }">👍 Curtir</button>
+      <button class="action-btn" @click="$emit('open-comments', post)">💬 Comentar</button>
       <button class="action-btn">↗️ Compartilhar</button>
     </footer>
   </article>
@@ -149,11 +149,27 @@ function formatDate(date) {
   background: #000;
 }
 
-/* --- Curtidas --- */
+/* --- Curtidas (Facebook style) --- */
 .post-likes {
-  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  margin-left: 6px;
   color: #b0b3b8;
   font-size: 0.85rem;
+}
+
+.post-likes::before {
+  content: "👍";
+  background: #1877f2;
+  color: #fff;
+  font-size: 0.7rem;
+  border-radius: 50%;
+  padding: 3px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- Ações --- */
@@ -173,11 +189,26 @@ function formatDate(date) {
   font-size: 0.9rem;
   padding: 6px 12px;
   border-radius: 6px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
+/* Efeito hover */
 .action-btn:hover {
   background: #3a3b3c;
   color: #e4e6eb;
+}
+
+/* Quando curtido */
+.action-btn.liked {
+  color: #1877f2;
+  font-weight: 600;
+}
+
+/* Ícone de curtida azul (Facebook style) */
+.action-btn.liked::before {
+  content: "";
 }
 </style>

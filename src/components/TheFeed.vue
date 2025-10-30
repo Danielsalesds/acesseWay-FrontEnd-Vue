@@ -12,6 +12,7 @@
       :post="post"
       :user="user"
       @like="handleLike(post.id)"
+      @open-comments="openComments"
     />
   </div>
 
@@ -20,13 +21,22 @@
   </div>
 
     <p v-if="!loading && posts.length === 0" class="empty">Nenhum post ainda 😢</p>
+
   </section>
+  <!-- Modal -->
+    <TheCommentModal
+      v-if="selectedPost"
+      :post="selectedPost"
+      @close="closeComments"
+    />
 </template>
 
 <script setup>
 import ThePostCreator from '../components/ThePostCreator.vue'
 //import { ref } from 'vue'
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
+import TheCommentModal from '@/components/TheCommentModal.vue'
+
 import { usePostStore as userPost } from '@/stores/postStore'
 //import { useAuthStore } from '@/stores/loginStore'
 import ThePost from '@/components/ThePost.vue'
@@ -42,15 +52,27 @@ const userPosts = userPost()
 const loading = computed(() => userPosts.loading)
 const posts = computed(() => userPosts.posts)
 
+const selectedPost = ref(null)
 
 // Lista de posts reativa
 //const posts = userPosts.posts
 onMounted(async () => {
    if (posts.value.length === 0) {
-    await userPosts.postGetAll()
+    await userPosts.postGetAllCp()
   }
 
 })
+function openComments(posts) {
+  selectedPost.value = posts
+}
+
+function closeComments() {
+  selectedPost.value = null
+}
+//definir curtidas
+async function handleLike(postId) {
+  await userPosts.likePost(postId)
+}
 
 </script>
 
