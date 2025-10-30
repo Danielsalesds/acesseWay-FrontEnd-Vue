@@ -1,164 +1,59 @@
 <template>
   <section class="feed">
+    <!-- Criador de post -->
+    <ThePostCreator />
 
-    <!-- Área de criação de novo post -->
-    <div class="new-post">
-      <h3>Criar novo post</h3>
-      <textarea
-        v-model="novoPost"
-        placeholder="Escreva algo..."
-        class="new-post-textarea"
-      ></textarea>
-      <button @click="criarPost" class="btn">Postar</button>
-    </div>
+    <!-- Posts -->
+    <!-- Só renderiza os posts se não estiver carregando -->
+    <div v-if= "posts">
+    <ThePost
+      v-for="post in posts || []"
+      :key="post.id"
+      :post="post"
+      :user="user"
+      @like="handleLike(post.id)"
+    />
+  </div>
 
-    <div 
-      v-for="post in posts" 
-      :key="post.id" 
-      class="post-card"
-    >
-      <!-- Cabeçalho -->
-      <div class="header">
-        <h3 class="author">Autor #{{ post.autorId }}</h3>
-        <small class="date">{{ formatDate(post.dataCriacao) }}</small>
-      </div>
+  <div v-else class="text-center text-gray-400 p-4">
+    Carregando posts...
+  </div>
 
-      <!-- Conteúdo do post -->
-      <p class="content">{{ post.conteudo }}</p>
-
-      <!-- Mídias -->
-      <div v-if="post.imagemUrl || post.videoUrl" class="media">
-        <img 
-          v-if="post.imagemUrl" 
-          :src="post.imagemUrl" 
-          alt="Imagem do post"
-          class="post-image"
-        />
-        <video 
-          v-if="post.videoUrl" 
-          :src="post.videoUrl" 
-          controls 
-          class="post-video"
-        />
-      </div>
-
-      <!-- Botões -->
-      <div class="acoes">
-        <button @click="curtirPost(post.id)" class="btn-like">
-          ❤️ Curtir ({{ post.curtidas }})
-        </button>
-      </div>
-
-      <!-- Curtidas -->
-      <div class="likes">
-        <span>❤️ {{ post.curtidas }} curtida{{ post.curtidas !== 1 ? 's' : '' }}</span>
-      </div>
-
-      <!-- Comentários -->
-      <div v-if="post.comentario && post.comentario.length > 0" class="comments">
-        <h4>Comentários:</h4>
-        <ul>
-          <li v-for="(c, i) in post.comentario" :key="i">
-            <strong v-if="c.usuarioId">Usuário #{{ c.usuarioId }}:</strong>
-            <span>{{ c.texto || "(comentário vazio)" }}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Nenhum post -->
-    <p v-if="posts.length === 0" class="empty">Nenhum post encontrado 😢</p>
+    <p v-if="!loading && posts.length === 0" class="empty">Nenhum post ainda 😢</p>
   </section>
 </template>
 
-<script>
-import axios from 'axios'
-import { useUserStore } from "@/stores/user";
+<script setup>
+import ThePostCreator from '../components/ThePostCreator.vue'
+//import { ref } from 'vue'
+import { onMounted, computed } from 'vue'
+import { usePostStore as userPost } from '@/stores/postStore'
+//import { useAuthStore } from '@/stores/loginStore'
+import ThePost from '@/components/ThePost.vue'
+import { useAuthStore } from '@/stores/loginStore'
 
-export default {
-  name: 'FeedPosts',
-  data() {
-    return {
-      posts: [],
-      novoPost: ''
-    }
-  },
+const store = useAuthStore()
+const user = store.user
 
-  created() {
-    this.userStore = useUserStore(); // 🔹 inicializa o store aqui
-  },
-  
-  async mounted() {
-    try {
-      const response = await axios.get('https://post-ms.onrender.com/api/posts')
-      this.posts = response.data
-    } catch (error) {
-      console.error('Erro ao buscar posts:', error)
-    }
-  },
-  methods: {
-  formatDate(dateString) {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  },
+//const store = useAuthStore()
+//const user = store.user
 
-  async criarPost() {
-    const userStore = useUserStore();
+const userPosts = userPost()
+const loading = computed(() => userPosts.loading)
+const posts = computed(() => userPosts.posts)
 
-    if (!this.novoPost || !this.novoPost.trim()) {
-      alert("Digite algo antes de postar!");
-      return;
-    }
 
-    if (!userStore.id) {
-      alert("Usuário não logado!");
-      return;
-    }
-
-    try {
-      const novo = {
-        autorId: userStore.id,
-        conteudo: this.novoPost,
-      }
-      await axios.post("http://localhost:8082/api/posts", novo)
-      this.novoPost = ""
-      await this.carregarPosts()
-    } catch (error) {
-      console.error("Erro ao criar post:", error)
-    }
-  },
-
-  async curtirPost(postId) {
-    const userStore = useUserStore();
-
-    try {
-      await axios.post(
-        `http://localhost:8082/api/posts/${postId}/curtir?usuarioId=${userStore.id}`
-      )
-      await this.carregarPosts()
-    } catch (error) {
-      console.error("Erro ao curtir post:", error)
-    }
-  },
-
-  async carregarPosts() {
-    try {
-      const response = await axios.get('http://localhost:8082/api/posts')
-      this.posts = response.data
-    } catch (error) {
-      console.error('Erro ao buscar posts:', error)
-    }
+// Lista de posts reativa
+//const posts = userPosts.posts
+onMounted(async () => {
+   if (posts.value.length === 0) {
+    await userPosts.postGetAll()
   }
-}
-}
+
+})
+
 </script>
+
 
 <style scoped>
 .feed {
@@ -167,63 +62,37 @@ export default {
   gap: 16px;
   overflow-y: auto;
   height: calc(100vh - 60px);
-  padding: 20px;
-  background-color: #18191a;
+
+  padding: 20px 0;
+  background-color: #18191a; /* só pra deixar o fundo consistente */
 }
 
-.post-card {
+/* Define um tamanho padrão e centralizado para todos os cards */
+.feed > * {
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+}
+
+/* Espaçamento entre o criador e os posts */
+.feed > * + * {
+  margin-top: 20px; /* distância entre os cards */
+}
+
+/* Aparência dos cards de post */
+.post {
   background-color: #242526;
-  border-radius: 12px;
-  padding: 16px 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.post-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.author {
-  color: #e4e6eb;
-  font-weight: 600;
-  margin: 0;
-}
-
-.date {
-  color: #a0a0a0;
-  font-size: 0.8rem;
-}
-
-.content {
-  color: #b0b3b8;
-  line-height: 1.5;
-  margin: 8px 0;
-}
-
-.media {
-  margin-top: 10px;
-}
-
-.post-image {
-  width: 100%;
-  max-height: 300px;
   border-radius: 10px;
-  object-fit: cover;
-  margin-top: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-.post-video {
-  width: 100%;
+/* Estilo especial pro criador (opcional) */
+.post-creator {
+  background-color: #242526;
   border-radius: 10px;
-  margin-top: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .likes {
@@ -280,15 +149,12 @@ export default {
   color: #e4e6eb;
   margin-bottom: 10px;
 }
-.btn {
-  background-color: #2374e1;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.btn:hover {
-  background-color: #0056b3;
+
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .feed > * {
+    max-width: 95%;
+  }
 }
 </style>

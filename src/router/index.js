@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 //import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import { useAuthStore } from '@/stores/loginStore'
+//import { usePostStore as userPost } from '@/stores/postStore'
+
 
 
 const routes = [
@@ -43,6 +45,15 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/editProfileView.vue'),
     meta: { requiresAuth: true }
+  },
+    {
+    path: '/requests',
+    name: 'Request',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/RequestView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
@@ -58,6 +69,7 @@ const router = createRouter({
 //Guard global
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  //const posts = userPost()
 
   // Se a rota exigir autenticação
   if (to.meta.requiresAuth) {
@@ -71,6 +83,7 @@ router.beforeEach(async (to, from, next) => {
       try {
         await authStore.getUserProfile(authStore.userId)
         console.log('Perfil do usuário carregado com sucesso!')
+        //await posts.getAllPosts()
       } catch (err) {
         console.error('Erro ao carregar perfil do usuário:', err)
         authStore.logout()
