@@ -21,11 +21,11 @@ module.exports = defineConfig({
     },
     allowedHosts: 'all', // permite acessar de qualquer host externo, incluindo ngrok
     host: '0.0.0.0',    // deixa o servidor acessível externamente
-   // https: false,           // deixa sem HTTPS (ngrok vai fornecer HTTPS)
+    https: false,           // deixa sem HTTPS (ngrok vai fornecer HTTPS)
    // hot: false, // desativa HMR
-   // client: {
-   //   webSocketURL: 'wss://0.0.0.0:3001/ws', // força WebSocket seguro
-   // }
+    client: {
+      webSocketURL: 'wss://0.0.0.0:3001/ws', // força WebSocket seguro
+    }
   },
 })
 

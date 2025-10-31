@@ -75,7 +75,7 @@ const search = async () => {
   top: 0;
   left: 0;
   width: 98%;
-  height: 60px;
+  height: 50px;
   background-color: #242526;
   color: white;
   display: flex;
@@ -84,6 +84,7 @@ const search = async () => {
   padding: 0 16px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  
   
 }
 

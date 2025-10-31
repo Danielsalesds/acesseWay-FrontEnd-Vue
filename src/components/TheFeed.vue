@@ -98,7 +98,10 @@ defineExpose({ reloadPosts, scrollToTop })
   overflow-y: auto;
   height: calc(100vh - 60px);
 
-  padding: 20px 0;
+  margin-top: 10px; /* distância do header */
+  padding-top: 10px;
+  margin-bottom: 50px;
+
   background-color: #18191a; /* só pra deixar o fundo consistente */
 }
 
