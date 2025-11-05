@@ -20,6 +20,7 @@ import RightSidebar from '../components/RightSidebar.vue'
 import TheHeader from '../components/TheHeader.vue'
 import EstablishmentForm from '../components/EstablishmentForm.vue'
 import EstablishmentMap from '../components/EstablishmentMap.vue'
+import EstablishmentList from '@/components/EstablishmentList.vue'
 
 export default {
   components: {
@@ -29,6 +30,7 @@ export default {
     TheHeader,
     EstablishmentForm,
     EstablishmentMap,
+    EstablishmentList
   },
   data() {
     return {
@@ -57,7 +59,10 @@ export default {
           ? 'TheFeed'
           : view === 'form'
           ? 'EstablishmentForm'
-          : 'EstablishmentMap'
+          : view == 'map'
+          ?'EstablishmentMap'
+          : 'EstablishmentList'
+
     },
   }
   
