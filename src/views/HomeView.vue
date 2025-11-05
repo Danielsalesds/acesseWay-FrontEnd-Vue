@@ -69,7 +69,6 @@ export default {
 html, body {
   height: 100%;
   margin: 0;
-
   overflow: hidden; /* evita que a página role */
   width: 100%;
 }
@@ -77,13 +76,9 @@ html, body {
   background-color: #18191a;
   color: #e4e6eb;
   height: 100vh;
-
   overflow: hidden; /* evita scroll global */
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* evita transbordamento vertical */
-  padding-top: 30px;
-  margin-top: 60px;
 }
 
 .content {
@@ -91,20 +86,17 @@ html, body {
   display: grid;
   grid-template-columns: 300px 1fr 300px;
   gap: 20px;
-
   padding-top: 60px; /* altura do header fixo */
   height: calc(100vh - 60px); /* altura restante */
 }
 
 /* As 3 colunas com scroll próprio */
 .content > * {
-  overflow-y: auto; /* cada coluna rola separadamente */
-  height: calc(100vh - 60px); /* evita scroll extra */
+  overflow-y: auto;
+  height: 100%;
   scrollbar-width: thin;
   scrollbar-color: #3a3b3c #18191a;
 }
-
-
 
 /* Responsividade */
 @media (max-width: 1100px) {
@@ -118,6 +110,7 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
-
 </style>
+
+
 
