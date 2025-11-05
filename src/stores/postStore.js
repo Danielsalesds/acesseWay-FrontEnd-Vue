@@ -348,6 +348,59 @@ export const usePostStore = defineStore('post', {
         this.loading = false
       }
     },
+    //deletar post
+    async deletePost(postId) {
+      this.loading = true
+      this.error = null
+
+      try {
+        await api.delete(`https://post-ms.onrender.com/api/posts/${postId}`)
+
+        // Remove localmente
+        this.posts = this.posts.filter(p => p.id !== postId)
+
+        console.log("Post removido:", postId)
+
+      } catch (err) {
+        this.error = err.response?.data?.message || "Erro ao excluir post"
+        console.error(err)
+      } finally {
+        this.loading = false
+      }
+    },
+    //reportar post
+    async reportPost({ postId, reason }) {
+      this.loading = true
+      this.error = null
+
+      const profileStore = userProfileStore()
+      //Verificar se user esta carregado se não carrega-lo no store
+      if (!profileStore.user) {
+        await profileStore.getUserProfile()
+        console.error("Usuário não logado!")
+        return
+      }
+
+      try {
+        await api.post(
+          `https://post-ms.onrender.com/api/posts/${postId}/report`,
+          {
+            reason,
+            data: new Date().toISOString()
+          }
+        )
+
+        alert("Denúncia enviada!")
+
+      } catch (err) {
+        this.error = err.response?.data?.message || "Erro ao denunciar post"
+        console.error(err)
+      } finally {
+        this.loading = false
+      }
+    },
+
+
     //likes de users
     async likePost(postId) {
       this.loading = true
