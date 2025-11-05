@@ -13,7 +13,12 @@
           <small class="post-date">{{ formatDate(post.dataCriacao) }}</small>
         </div>
       </div>
-      <button class="menu-btn">⋯</button>
+      <button class="menu-btn" @click="toggleMenu">⋯</button>
+
+      <div v-if="menuOpen" class="dropdown-menu">
+        <button @click="handleDelete(post.id)">🗑 Excluir</button>
+        <button @click="openReport">🚩 Denunciar</button>
+      </div>
     </header>
 
     <!-- Texto do post -->
@@ -47,14 +52,64 @@
       <button class="action-btn">↗️ Compartilhar</button>
     </footer>
   </article>
+
+  <!--Modal-->
+  <div v-if="reportOpen" class="report-overlay">
+  <div class="report-modal">
+    <h3>Denunciar publicação</h3>
+
+    <div class="report-options">
+      <label><input type="radio" value="conteudo_improprio" v-model="selectedReport" /> Conteúdo impróprio</label>
+      <label><input type="radio" value="discurso_odio" v-model="selectedReport" /> Discurso de ódio</label>
+      <label><input type="radio" value="spam" v-model="selectedReport" /> Spam</label>
+    </div>
+
+    <div class="report-actions">
+      <button class="btn-cancel" @click="closeReport">Cancelar</button>
+      <button class="btn-send" @click="sendReport(post.id)" :disabled="!selectedReport">Enviar</button>
+    </div>
+  </div>
+</div>
+
+
+
 </template>
 
 <script setup>
 
 /* eslint-disable no-undef */
 defineProps({ post: Object, user: Object, })
+const emit = defineEmits(["delete", "report"])
+
+
+import { ref } from "vue"
 
 //const defaultImage = 'https://via.placeholder.com/120?text=Perfil'
+
+const menuOpen = ref(false)
+const reportOpen = ref(false)
+
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+}
+
+function handleDelete(id) {
+  // dispara evento pro pai
+  menuOpen.value = false
+  
+  emit('delete', id)
+
+}
+
+function openReport() {
+  reportOpen.value = true
+  menuOpen.value = false
+}
+function closeReport() {
+  reportOpen.value = false
+  selectedReport.value = ""
+}
+
 
 
 function formatDate(date) {
@@ -65,6 +120,22 @@ function formatDate(date) {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+//config do modal
+
+const selectedReport = ref("")
+
+function sendReport(idPost) {
+  if (!selectedReport.value) return alert("Selecione um motivo")
+
+  emit("report", {
+    postId: idPost,
+    reason: selectedReport.value
+  })
+
+  reportOpen.value = false
+  selectedReport.value = ""
 }
 
 
@@ -85,6 +156,7 @@ function formatDate(date) {
 
 /* --- Cabeçalho --- */
 .post-header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -211,4 +283,139 @@ function formatDate(date) {
 .action-btn.liked::before {
   content: "";
 }
+/*Menu dos 3 potinhos*/ 
+.dropdown-menu {
+  position: absolute;
+  right: 10px;
+  top: 40px;
+  background: #3a3b3c;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  padding: 6px 14px;
+  text-align: left;
+  width: 100%;
+  color: #e4e6eb;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background: #4a4b4d;
+}
+/* overlay escuro com blur */
+.report-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+/* container do modal */
+.report-modal {
+  background: #242526;
+  padding: 24px;
+  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  color: #fff;
+  animation: fadeInScale 0.2s ease;
+}
+
+/* animação elegante */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.report-modal h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* opções */
+.report-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.report-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.report-options label:hover {
+  background: #3a3b3c;
+}
+
+/* botoes */
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: #3a3b3c;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: #4d4d4d;
+}
+
+.btn-send {
+  background: #1877F2;
+  color: #fff;
+}
+
+.btn-send:hover:not(:disabled) {
+  background: #0d62d7;
+}
+
+.btn-send:disabled {
+  background: #4f709d;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
 </style>

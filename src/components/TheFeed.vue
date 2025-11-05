@@ -13,6 +13,8 @@
       :user="user"
       @like="handleLike(post.id)"
       @open-comments="openComments"
+      @delete="deletePost"
+      @report="reportPost"
     />
   </div>
 
@@ -84,6 +86,16 @@ async function scrollToTop() {
     feedElement.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
+//deletar e reportar post
+async function deletePost(id) {
+  await userPosts.deletePost(id)
+    alert("post excluido!")
+}
+
+async function reportPost({ postId, reason }) {
+  alert("Denúncia enviada:"+ postId+ " denucia: " +reason)
+}
+
 
 // expõe a função para o componente pai (Home.vue) poder chamar
 defineExpose({ reloadPosts, scrollToTop })

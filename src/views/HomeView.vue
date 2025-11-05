@@ -66,17 +66,19 @@ export default {
 </script>
 
 <style scoped>
-html,
-body {
+html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* impede scroll geral */
-}
 
+  overflow: hidden; /* evita que a página role */
+  width: 100%;
+}
 .layout-home {
   background-color: #18191a;
   color: #e4e6eb;
   height: 100vh;
+
+  overflow: hidden; /* evita scroll global */
   display: flex;
   flex-direction: column;
   overflow: hidden; /* evita transbordamento vertical */
@@ -89,11 +91,12 @@ body {
   display: grid;
   grid-template-columns: 300px 1fr 300px;
   gap: 20px;
-  padding-top: 60px; /* espaço pro header fixo */
-  height: 100%; /* preenche a altura disponível */
-  overflow: hidden; /* sem scroll na área geral */
+
+  padding-top: 60px; /* altura do header fixo */
+  height: calc(100vh - 60px); /* altura restante */
 }
 
+/* As 3 colunas com scroll próprio */
 .content > * {
   overflow-y: auto; /* cada coluna rola separadamente */
   height: calc(100vh - 60px); /* evita scroll extra */
@@ -101,10 +104,7 @@ body {
   scrollbar-color: #3a3b3c #18191a;
 }
 
-/* deixa a área central (feed) com rolagem principal */
-.content > :nth-child(2) {
-  overflow-y: auto;
-}
+
 
 /* Responsividade */
 @media (max-width: 1100px) {
@@ -120,3 +120,4 @@ body {
 }
 
 </style>
+
