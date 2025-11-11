@@ -1,14 +1,16 @@
 <template>
     <div class="star-rating">
-    <span v-for="i in 5" :key="i">
-      
-      <i v-if="rating >= i" class="fas fa-star"></i>
-      <i v-else-if="rating >= i - 0.5" class="fas fa-star-half-alt"></i>
-      <i v-else class="far fa-star"></i>
-    </span>
-  </div>
+      <span v-for="i in 5" :key="i">
+        
+        <i v-if="rating >= i" class="fas fa-star"></i>
+        <i v-else-if="rating >= i - 0.5" class="fas fa-star-half-alt"></i>
+        <i v-else class="far fa-star"></i>
+        
+      </span>
+    </div>
 </template>
 <script setup>
+import { defineProps } from 'vue'
 defineProps({
   rating: {
     type: Number,

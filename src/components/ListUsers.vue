@@ -40,7 +40,7 @@ const tratarErroNaImagem = (event, firstName, lastName) => {
 
 </script>
 
-<style>
+<style scoped>
   body{
     background-color: #18191a;
   }
