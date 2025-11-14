@@ -7,6 +7,8 @@ import { API_URL } from './config';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import 'leaflet/dist/leaflet.css';
 
+import PrimeVue from 'primevue/config';
+
 axios.defaults.baseURL = API_URL;
 
 const pinia = createPinia();
@@ -16,4 +18,5 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.mount('#app');
+app.use(PrimeVue, { unstyled: true });
 

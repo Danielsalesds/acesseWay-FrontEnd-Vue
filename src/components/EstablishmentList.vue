@@ -1,6 +1,6 @@
 <template>
     <section>
-        <h1>Estabelecimento</h1>
+        <h1>Locais</h1>
         <h2 v-if="store.loading">Carregando...</h2>
         <ul v-else-if="store.establishments.length > 0" class="list">
             <li v-for="e in store.establishments" :key="e.id">
@@ -30,8 +30,9 @@ onMounted(()=>{
 <style scoped>
 
 .list {
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto;
+  margin-right: auto; */
+
   max-width: 600px;
   width: 100%;      
   display: flex;

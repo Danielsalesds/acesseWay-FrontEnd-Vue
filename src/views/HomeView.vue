@@ -8,7 +8,7 @@
       <!-- Mostra feed ou mapa -->
       <component :is="currentView" ref="feedRef" />
 
-      <RightSidebar />
+      <!-- <RightSidebar /> -->
     </main>
   </div>
 </template>
@@ -20,8 +20,7 @@ import RightSidebar from '../components/RightSidebar.vue'
 import TheHeader from '../components/TheHeader.vue'
 import EstablishmentForm from '../components/EstablishmentForm.vue'
 import EstablishmentMap from '../components/EstablishmentMap.vue'
-import EstablishmentList from '@/components/EstablishmentList.vue'
-
+import FindPlaces from '@/components/FindPlaces.vue'
 export default {
   components: {
     LeftSidebar,
@@ -30,7 +29,7 @@ export default {
     TheHeader,
     EstablishmentForm,
     EstablishmentMap,
-    EstablishmentList
+    FindPlaces
   },
   data() {
     return {
@@ -61,7 +60,7 @@ export default {
           ? 'EstablishmentForm'
           : view == 'map'
           ?'EstablishmentMap'
-          : 'EstablishmentList'
+          : 'FindPlaces'
 
     },
   }
@@ -69,7 +68,11 @@ export default {
  
 }
 </script>
-
+<style>
+  body{
+    background-color: #18191a;
+  }
+</style>
 <style scoped>
 html, body {
   height: 100%;

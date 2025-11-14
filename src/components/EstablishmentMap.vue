@@ -1,8 +1,8 @@
 <template>
-  <div class="map-container">
-    <h2>Mapa de Estabelecimentos</h2>
-    <div ref="mapEl" class="map"></div>
-  </div>
+  <!-- <div class="map-container"> -->
+    
+  <!-- </div> -->
+  <div ref="mapEl" class="map"></div>
 </template>
 
 <script setup>
@@ -73,7 +73,7 @@ onUnmounted(() => map && map.remove())
 </script>
 
 <style scoped>
-.map-container {
+/* .map-container {
   width: 100%;
   max-width: 1000px;
   margin: 1rem auto;
@@ -81,12 +81,13 @@ onUnmounted(() => map && map.remove())
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .map {
   height: 500px;
   border-radius: 6px;
   border: 1px solid #ddd;
+  margin: 10px;
 }
 
 .api-debug {

@@ -10,11 +10,10 @@
       <li @click="$emit('change-view', 'map')">
         <i class="fas fa-map-marked-alt"></i> Mapa
       </li>
-      <li><i class="fas fa-user-friends"></i> Amigos</li>
-      <li><i class="fas fa-video"></i> Vídeos</li>
-      <li><i class="fas fa-store"></i> Marketplace</li>
-      <li><i class="fas fa-clock"></i> Lembranças</li>
-      <li @click="$emit('change-view', 'establishment-list')"><i class="fa-solid fa-location-dot"></i>Estabelecimentos</li>
+      <li @click="$emit('change-view', 'establishment-list')">
+        <i class="fa-solid fa-location-dot"></i>
+        Encontrar Locais
+      </li>
     </ul>
   </aside>
 </template>

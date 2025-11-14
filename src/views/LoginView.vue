@@ -1,34 +1,32 @@
 <template>
   <div class="login-container">
+    <div class="logo">
+      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200"/>
+      <h1>AcessWay</h1>
+      <h3>Conectando pessoas, quebrando barreiras.</h3>
+    </div>
+
     <div class="login-box">
-      
       <!-- Formulário de login -->
       <form class="login-form" @submit.prevent="login">
-        <input 
-          type="text" 
-          v-model="form.email"
-          placeholder="Email "
-          required 
-        />
-        <input 
-          type="password"
-          v-model="form.password"
-          placeholder="Senha" 
-          required
-        />
+
+        <label for="email">Email</label>
+        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com" />
+
+        <label for="password">Senha</label>
+        <input id="password" type="password" v-model="form.password" required placeholder="••••••••••"/>
+
         <button type="submit" class="login-btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
       </form>
 
       <hr />
-
       <!-- Criar nova conta -->
       <button class="signup-btn" @click="Signup">Criar nova conta</button>
 
-      <!-- Texto adicional -->
-      <p>
-        Crie uma <strong>Página</strong> para uma celebridade, uma marca ou uma empresa.
-      </p>
+      <div v-if="store.loading" class="loader-overlay">
+        <div class="loader"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +35,9 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import  {useAuthStore} from '@/stores/loginStore'
+  import Image from 'primevue/image'
+  // import InputText from 'primevue/inputtext';
+  // import {FloatLabel} from 'primevue';
 
   const store = useAuthStore()
   const router = useRouter()
@@ -67,10 +68,27 @@
   }
 </script>
 
+<style>
+  body{
+    background-color: #f0f2f5;
+  }
+</style>
 <style scoped>
+.logo h1{ 
+  margin: 0;
+}
+.logo h3{
+  margin: 0;
+    margin-bottom: 20px;
+}
+.logo Image{
+  margin: 0;
+
+}
 /* Container centralizado */
 .login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -110,7 +128,9 @@
 /* Botão Entrar */
 .login-btn {
   width: 100%;
-  background: linear-gradient(90deg, #1877f2, #0f62d0);
+  color: white;
+  /* background: linear-gradient(90deg, #1877f2, #0f62d0); */
+  background-color: #0d47a1;
   font-weight: bold;
   padding: 12px;
   border: none;
@@ -129,7 +149,8 @@
 .forgot-password {
   display: block;
   font-size: 13px;
-  color: #1877f2;
+  /* color: #1877f2; */
+  color: #0d47a1;
   text-decoration: none;
   margin-bottom: 20px;
 }
@@ -147,11 +168,14 @@
 
 /* Botão criar nova conta */
 .signup-btn {
+  /* color: white; */
+  color: #1B5E20;
   width: 100%;
-  background: linear-gradient(90deg, #1fa866, #177946);
+  /* background: linear-gradient(90deg, #1fa866, #177946); */
+  background-color: white;
   font-weight: bold;
   padding: 12px;
-  border: none;
+  border: 2px solid #1B5E20;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
@@ -159,7 +183,13 @@
 }
 
 .signup-btn:hover {
-  background-color: #36a420;
+  /* background-color: #36a420; */
+  background-color: rgba(27, 94, 32, 0.1);
+}
+
+.signup-btn:focus{
+  outline: none; /* Remove o padrão do navegador */
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.4); /* Brilho sutil */
 }
 
 /* Texto adicional */
@@ -167,5 +197,38 @@
   font-size: 13px;
   color: #606770;
   margin-top: 20px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+}
+.loader-overlay{
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
