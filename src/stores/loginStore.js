@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await fetch('https://auth-test-v7zw.onrender.com/auth/login', {
+        const res = await fetch('https://acessway.onrender.com/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(credentials)
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore('auth', {
     async getUserProfile(userId) {
       if (!this.token) throw new Error('Sem token, faça login primeiro.')
 
-      const res = await fetch(`https://user-ms-yb1o.onrender.com/user/${userId}`, {
+      const res = await fetch(`https://acessway.onrender.com/user/${userId}`, {
         headers: { 'Authorization': `Bearer ${this.token}` }
       })
       const data = await res.json()

@@ -61,7 +61,6 @@ export default {
           : view == 'map'
           ?'EstablishmentMap'
           : 'FindPlaces'
-
     },
   }
   

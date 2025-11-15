@@ -53,7 +53,7 @@ async function submit() {
   load.value = true
   if (!form.latitude || !form.longitude) { alert('Informe a localização ou use o botão "Abrir mapa".'); load.value = false; return }
   try {
-    const response = await axios.post('https://establishment-ms.onrender.com/establishment-request', {
+    const response = await axios.post('https://acessway.onrender.com/establishment-request', {
       ...form,
       cnpj: form.cnpj.replace(/\D/g, ''),
       phone: form.phone.replace(/\D/g, ''),
@@ -66,9 +66,22 @@ async function submit() {
   finally { load.value = false }
 }
 </script>
-
+<style>
+  body{
+    background-color: #18191a;
+  }
+</style>
 <style scoped>
-.container{max-width:800px;margin:1.5rem auto;padding:1rem;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);overflow-y:auto}
+.container{
+  max-width:800px;
+  margin:1.5rem auto;
+  padding:1rem;
+  background-color: #18191a;
+  border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  overflow-y:auto
+}
+
 .form-body{padding-bottom:5rem}
 h2{margin:0 0 .75rem;font-weight:600;font-size:1.3rem;text-align:center}
 input{width:100%;padding:.6rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;box-sizing:border-box}

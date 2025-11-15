@@ -20,7 +20,7 @@ export const useStore = defineStore('profile', {
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.post('https://auth-test-v7zw.onrender.com/auth', newUser,{ withCredentials: true })
+        const { data } = await api.post('https://acessway.onrender.com/auth', newUser,{ withCredentials: true })
         this.user = data || null
         console.log('Usuário cadastrado:', data)
 
@@ -61,7 +61,7 @@ export const useStore = defineStore('profile', {
         // Faz o Upload da imagem para o Cloudinary e atribui a url para o usuário que vai ser atualizado.
         let formData =  new FormData()
         formData.append("file",updatedData.imageUrl)
-        let response = await axios.post("https://post-ms.onrender.com/api/upload", formData,{
+        let response = await axios.post("https://acessway.onrender.com/api/upload", formData,{
           headers: {
               Authorization: `Bearer ${token}`,
           }

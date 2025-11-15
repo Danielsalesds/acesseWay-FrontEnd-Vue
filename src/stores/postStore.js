@@ -27,7 +27,7 @@ export const usePostStore = defineStore('post', {
       try {
         //adicionar ID do autor do post
         const postWithAuthor = { ...newPost, autorId: userId}
-        const { data } = await api.post('https://post-ms.onrender.com/api/posts', postWithAuthor)
+        const { data } = await api.post('https://acessway.onrender.com/api/posts', postWithAuthor)
 
         //  Atualizar cache de autores
         this.authorsCache = this.authorsCache || {}
@@ -74,7 +74,7 @@ export const usePostStore = defineStore('post', {
 
       try {
         //  Buscar posts e ordenar por data (mais recente primeiro)
-        const { data } = await api.get('https://post-ms.onrender.com/api/posts')
+        const { data } = await api.get('https://acessway.onrender.com/api/posts')
         const sortedPosts = data.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
 
         //  Enriquecer posts e comentários com nome/foto do autor
@@ -86,7 +86,7 @@ export const usePostStore = defineStore('post', {
             if (!autorInfo) {
               try {
                 const { data: userData } = await api.get(
-                  `https://user-ms-yb1o.onrender.com/user/${post.autorId}`,
+                  `https://acessway.onrender.com/user/${post.autorId}`,
                   {
                     headers: {
                       Authorization: `Bearer ${profileStore.token}`
@@ -119,7 +119,7 @@ export const usePostStore = defineStore('post', {
                 if (!commentAuthor) {
                   try {
                     const { data: commentUser } = await api.get(
-                      `https://user-ms-yb1o.onrender.com/user/${comment.usuarioId}`,
+                      `https://acessway.onrender.com/user/${comment.usuarioId}`,
                       {
                         headers: {
                           Authorization: `Bearer ${profileStore.token}`
@@ -188,7 +188,7 @@ export const usePostStore = defineStore('post', {
 
       try {
         // 1️ Buscar posts e ordenar por data (mais recente primeiro)
-        const { data } = await api.get('https://post-ms.onrender.com/api/posts')
+        const { data } = await api.get('https://acessway.onrender.com/api/posts')
         const sortedPosts = data.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
 
         // 2️ Enriquecer os posts com informações do autor
@@ -201,7 +201,7 @@ export const usePostStore = defineStore('post', {
             if (!autorInfo) {
               try {
                 const { data: userData } = await api.get(
-                  `https://user-ms-yb1o.onrender.com/user/${post.autorId}`,
+                  `https://acessway.onrender.com/user/${post.autorId}`,
                   {
                     headers: {
                       Authorization: `Bearer ${profileStore.token}`
@@ -271,7 +271,7 @@ export const usePostStore = defineStore('post', {
 
           // Fazer a requisição
           const { data } = await api.post(
-            `https://post-ms.onrender.com/api/posts/${postId}/comentar`,
+            `https://acessway.onrender.com/api/posts/${postId}/comentar`,
             payload
           )
 
@@ -338,7 +338,7 @@ export const usePostStore = defineStore('post', {
         return
       }
       try {
-      const { data } = await api.get('https://post-ms.onrender.com/api/posts')
+      const { data } = await api.get('https://acessway.onrender.com/api/posts')
       this.posts = data
       console.log('post:  ', data)
       } catch (err) {
@@ -354,7 +354,7 @@ export const usePostStore = defineStore('post', {
       this.error = null
 
       try {
-        await api.delete(`https://post-ms.onrender.com/api/posts/${postId}`)
+        await api.delete(`https://acessway.onrender.com/api/posts/${postId}`)
 
         // Remove localmente
         this.posts = this.posts.filter(p => p.id !== postId)
@@ -383,7 +383,7 @@ export const usePostStore = defineStore('post', {
 
       try {
         await api.post(
-          `https://post-ms.onrender.com/api/posts/${postId}/report`,
+          `https://acessway.onrender.com/api/posts/${postId}/report`,
           {
             reason,
             data: new Date().toISOString()
@@ -417,7 +417,7 @@ export const usePostStore = defineStore('post', {
       const userId = profileStore.user?.id
 
       try {
-        await api.post(`https://post-ms.onrender.com/api/posts/${postId}/curtir?usuarioId=${userId}`)
+        await api.post(`https://acessway.onrender.com/api/posts/${postId}/curtir?usuarioId=${userId}`)
 
         // Atualiza o post localmente sem precisar recarregar tudo
         const post = this.posts.find(p => p.id === postId)

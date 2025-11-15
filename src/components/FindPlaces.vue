@@ -17,7 +17,7 @@
                         </router-link>
                     </li>
                 </ul>
-        <h2 v-else> Nenhum estabelecimento encontrado</h2>
+                <h2 v-else> Nenhum estabelecimento encontrado</h2>
             </aside>
             <main class="map-column">
                 <EstablishmentMap/>
@@ -38,7 +38,7 @@
 
 <style scoped>
     .main{
-        padding: 16px;
+        /* padding: 16px; */
         color: #e4e6eb;
     }
     .list-column,
@@ -46,15 +46,57 @@
         border-radius: 8px;
         background-color: #242424;
     }
-    .list-column{
+    /* .list-column{
         display: flex;
         justify-content: center;
         width: 100%;
-    }
+    } */
     .columns{
         display: grid;
         grid-template-columns: 1fr;
         gap: 24px; /* Espaço entre as colunas no mobile */
+    }
+    .list {
+        margin: 0;
+        padding: 10px;
+        max-width: 600px;
+        width: 100%;      
+        display: flex;
+        flex-direction: column;
+        background-color: #242424;
+        box-sizing: border-box;
+        gap: 10px;
+    }  
+    .card {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        justify-content: space-between;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 10px;
+        border-bottom: 2px solid #4E4F50;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        background-color: transparent;
+    }
+    .card:last-child {
+        border-bottom: none;
+    }
+    .card:hover {
+        background-color: #4E4F50;
+    }
+    .e-data {
+        display: flex;
+        align-items: center;
+    }
+    li {
+        list-style-type: none;
+    }
+    img {
+        border-radius: 10px;
+        padding: 5px;
     }
     @media (min-width: 768px) {
         .columns {
@@ -70,48 +112,4 @@
             height: 100%;
         }
     }
-.list {
-  max-width: 600px;
-  width: 100%;      
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 10px;
-  padding-top: 10px;
-  margin-bottom: 50px;
-  background-color: #242424;
-  box-sizing: border-box;
-}  
-.card {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  justify-content: space-between;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  border-radius: 10px;
-  border-bottom: 2px solid #4E4F50;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  background-color: transparent;
-}
-.card:last-child {
-  border-bottom: none;
-}
-.card:hover {
-  background-color: #4E4F50;
-}
-.e-data {
-  display: flex;
-  align-items: center;
-}
-li {
-  list-style-type: none;
-  padding-top: 10px;
-}
-img {
-  border-radius: 10px;
-  padding: 5px;
-}
 </style>

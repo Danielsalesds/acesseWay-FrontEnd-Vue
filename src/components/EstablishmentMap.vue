@@ -34,7 +34,7 @@ onMounted(async () => {
   }).addTo(map)
 
   try {
-    const { data } = await axios.get('https://establishment-ms.onrender.com/establishment')
+    const { data } = await axios.get('https://acessway.onrender.com/establishment')
     console.log('Retorno completo da API:', data)
     apiResponse.value = JSON.stringify(data, null, 2) // Mostra na tela formatado
 

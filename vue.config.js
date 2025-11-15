@@ -6,14 +6,14 @@ module.exports = defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://user-ms-yb1o.onrender.com',
+        target: 'https://acessway.onrender.com/',
         changeOrigin: true,
         secure: false,
         pathRewrite: {'^/api' : ''} // opcional, remove /api ao mandar pro backend
 
       },
       '/api/conect': {
-    target: 'https://auth-test-v7zw.onrender.com/auth/login',
+    target: 'https://acessway.onrender.com/auth/login',
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/api/login': '' }

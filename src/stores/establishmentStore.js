@@ -5,12 +5,13 @@ export const useEstablishmentStore = defineStore('establishment', {
     reviews: [],
     loading: false,
     error: null,
+    url: "https://acessway.onrender.com"
   }),
   actions:{
     async getEstablishment() {
         this.loading = true
         try{
-            const response = await fetch("https://establishment-ms.onrender.com/establishment");
+            const response = await fetch(`${this.url}/establishment`);
             const data = await response.json()
             this.establishments = data.content
             console.log(data.content)
@@ -23,7 +24,7 @@ export const useEstablishmentStore = defineStore('establishment', {
         async getEstablishmentById(id) {
         this.loading = true
         try{
-            const response = await fetch(`https://establishment-ms.onrender.com/establishment/${id}`);
+            const response = await fetch(`${this.url}/establishment/${id}`);
             const data = await response.json()
             return data
         }catch(error){
@@ -35,7 +36,7 @@ export const useEstablishmentStore = defineStore('establishment', {
     async sendReview(id, review){
         this.loading = true
         try{
-            const response = await fetch(`https://establishment-ms.onrender.com/review/${id}`,
+            const response = await fetch(`${this.url}/review/${id}`,
                 {
                 method: "POST",
                 headers: {
@@ -54,7 +55,7 @@ export const useEstablishmentStore = defineStore('establishment', {
     async getReview(id){
         this.loading = true
         try{
-            const response = await fetch(`https://establishment-ms.onrender.com/review/${id}`);
+            const response = await fetch(`${this.url}/review/${id}`);
             const data = await response.json()
             this.reviews = data.content || []
             console.log("Reviews: "+this.reviews)

@@ -20,7 +20,7 @@
     async function getRequests() {
         loading.value = true
         try{
-            const response = await fetch("https://establishment-ms.onrender.com/establishment-request");
+            const response = await fetch("https://acessway.onrender.com/establishment-request");
             const data = await response.json()
             requests.value = data.content
             console.log(requests.value)

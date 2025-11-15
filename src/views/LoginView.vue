@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="logo">
-      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200"/>
+      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200" preview/>
       <h1>AcessWay</h1>
       <h3>Conectando pessoas, quebrando barreiras.</h3>
     </div>
@@ -11,11 +11,11 @@
       <form class="login-form" @submit.prevent="login">
 
         <label for="email">Email</label>
-        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com" />
+        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com">
 
         <label for="password">Senha</label>
         <input id="password" type="password" v-model="form.password" required placeholder="••••••••••"/>
-
+        <InputText/>
         <button type="submit" class="login-btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
       </form>
@@ -23,7 +23,6 @@
       <hr />
       <!-- Criar nova conta -->
       <button class="signup-btn" @click="Signup">Criar nova conta</button>
-
       <div v-if="store.loading" class="loader-overlay">
         <div class="loader"></div>
       </div>
@@ -36,8 +35,7 @@
   import { useRouter } from 'vue-router'
   import  {useAuthStore} from '@/stores/loginStore'
   import Image from 'primevue/image'
-  // import InputText from 'primevue/inputtext';
-  // import {FloatLabel} from 'primevue';
+  import InputText from 'primevue/inputtext'
 
   const store = useAuthStore()
   const router = useRouter()
