@@ -7,7 +7,8 @@ export const useAuthStore = defineStore('auth', {
     loading: false,
     error: null,
     token: null,       // não precisa pegar do localStorage manualmente
-    userId: null       // armazenaremos só o id do usuário
+    userId: null,      // armazenaremos só o id do usuário
+    role: null
   }),
 
   actions: {
@@ -27,6 +28,7 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = data.token
         this.userId = data.id
+        this.role = data.role
 
         // Buscar os dados do usuário logo após logar
         //await this.getUserProfile(data.id)
@@ -67,11 +69,12 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.userId = null
       this.error = null
+      this.role = null
     }
   },
 
   // Persistência automática usando plugin
   persist: {
-    paths: ['token', 'userId'] // ⚡ só salva o token e o id do usuário
+    paths: ['token', 'userId', 'role'] // salva o token e o id do usuário e a role
   }
 })

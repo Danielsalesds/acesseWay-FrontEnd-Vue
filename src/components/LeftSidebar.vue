@@ -4,9 +4,12 @@
       <li @click="$emit('change-view', 'feed')">
         <i class="fas fa-home"></i> Feed
       </li>
-      <li @click="$emit('change-view', 'form')">
+      <div v-if="role==='empresa'">
+        <li @click="$emit('change-view', 'form')">
         <i class="fas fa-plus-square"></i> Novo Estabelecimento
-      </li>
+        </li>
+      </div>
+      
       <li @click="$emit('change-view', 'map')">
         <i class="fas fa-map-marked-alt"></i> Mapa
       </li>
@@ -14,9 +17,25 @@
         <i class="fa-solid fa-location-dot"></i>
         Encontrar Locais
       </li>
+      <div v-if="role==='admin'">
+        <li @click="$emit('change-view', 'request')">
+        <i class="fa-solid fa-list-check"></i>
+        Solicitações Pendentes
+        </li>
+      </div>
     </ul>
   </aside>
 </template>
+<script setup>
+import { computed } from 'vue';
+import { useAuthStore as userProfileStore } from '@/stores/loginStore'
+
+const store = userProfileStore()
+const role = computed(() => store.role?.toLowerCase())
+
+
+</script>
+
 
 <style scoped>
 .left-sidebar {
