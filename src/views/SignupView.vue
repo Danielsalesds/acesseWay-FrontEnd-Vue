@@ -60,6 +60,10 @@
               Profissional
               <input id="role-pro" type="radio" value="PROFESSIONAL" v-model="form.role" />
             </label>
+            <label class="radio-box" for="role-adm">
+              Empresa
+              <input id="role-adm" type="radio" value="EMPRESA" v-model="form.role" />
+            </label>
           </div>
         </fieldset>
 
@@ -136,142 +140,157 @@ async function handleSubmit() {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f2f5;
+  background: #eef1f5;
   min-height: 100vh;
-  padding: 20px;
+  padding: 30px;
 }
 
 .signup-box {
-  background-color: #fff;
-  padding: 35px 40px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  width: 400px;
-  max-width: 100%;
-  font-family: Arial, sans-serif;
+  background: #ffffff;
+  padding: 40px 45px;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+  width: 500px;
+  transition: all .2s ease;
+}
+
+.signup-box:hover {
+  box-shadow: 0 12px 38px rgba(0,0,0,0.08);
 }
 
 .signup-box h2 {
   text-align: center;
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 800;
   color: #1c1e21;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .signup-box p {
   text-align: center;
-  color: #606770;
-  margin-bottom: 20px;
-  font-size: 14px;
+  color: #6f7280;
+  margin-bottom: 22px;
+  font-size: 15px;
 }
 
 .name-fields {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 input, select {
   width: 100%;
-  padding: 11px 12px;
+  padding: 13px 14px;
   margin-top: 6px;
-  border: 1px solid #ccd0d5;
-  border-radius: 8px;
+  border: 1px solid #d8dbe2;
+  border-radius: 10px;
   font-size: 15px;
   outline: none;
-  transition: all 0.2s ease;
-  color: #1c1e21;
-  background-color: #fff;
+  background: #fafbfc;
+  transition: all 0.25s ease;
 }
 
 input:focus, select:focus {
   border-color: #1877f2;
-  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.20);
 }
 
 .birth-selects {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .gender, .account-type {
-  margin-top: 15px;
+  margin-top: 18px;
+}
+
+.gender legend,
+.account-type legend {
+  font-weight: 600;
+  color: #1c1e21;
+  margin-bottom: 6px;
 }
 
 .options-box {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .radio-box {
   flex: 1;
-  border: 1px solid #ccd0d5;
-  border-radius: 8px;
-  background-color: #f5f6f700;
-  padding: 10px 12px;
+  border: 1px solid #d8dbe2;
+  border-radius: 10px;
+  background: #fafafa;
+  padding: 12px 14px;
   font-size: 14px;
   color: #1c1e21;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
-}
-
-.radio-box input {
-  margin-left: 6px;
-  accent-color: #1877f2;
+  transition: all .2s ease;
+  font-weight: 500;
 }
 
 .radio-box:hover {
-  background-color: #e4e6eb;
+  background: #f2f4f7;
+  border-color: #b6b9c3;
 }
 
-.radio-box:focus-within {
-  outline: 2px solid #1877f2;
-  outline-offset: 2px;
+.radio-box input {
+  margin-left: 10px;
+  accent-color: #1877f2;
+  width: 18px;
+  height: 18px;
+}
+
+.radio-box:has(input:checked) {
+  background: #eaf3ff;
+  border-color: #1877f2;
+  color: #1877f2;
+  font-weight: 600;
 }
 
 .signup-btn {
   width: 100%;
-  background-color: #42b72a;
+  background: #42b72a;
   color: white;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
-  font-size: 17px;
+  border-radius: 10px;
+  font-size: 18px;
   font-weight: 700;
-  margin-top: 20px;
+  margin-top: 25px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all .2s ease;
+  letter-spacing: 0.3px;
 }
 
 .signup-btn:hover {
-  background-color: #36a420;
-}
-
-.signup-btn:focus {
-  outline: 3px solid #1c1e21;
-  outline-offset: 2px;
+  background: #36a420;
+  transform: translateY(-1px);
 }
 
 .signup-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .login-link {
   display: block;
   text-align: center;
-  margin-top: 18px;
+  margin-top: 20px;
   color: #1877f2;
-  font-size: 14px;
+  font-size: 15px;
   text-decoration: none;
+  transition: opacity .2s ease;
 }
 
 .login-link:hover {
-  text-decoration: underline;
+  opacity: 0.8;
 }
+
 </style>

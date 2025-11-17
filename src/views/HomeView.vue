@@ -3,10 +3,17 @@
     <!-- Passa função toggleMap para o Header -->
     <TheHeader @show-map="showMap" @show-home="showFeed"  @toggle-map="setView('map')"/>
     <main class="content">
-      <LeftSidebar @change-view="setView" />
+      <LeftSidebar  
+        @change-view="setView" 
+        :class="{ hide: currentView === 'RequestView' }"
+      />
       
       <!-- Mostra feed ou mapa -->
-      <component :is="currentView" ref="feedRef" />
+      <component 
+        :is="currentView" 
+        ref="feedRef" 
+        :class="{ requestView: currentView === 'RequestView' }"
+      />
 
       <!-- <RightSidebar /> -->
     </main>
@@ -21,6 +28,8 @@ import TheHeader from '../components/TheHeader.vue'
 import EstablishmentForm from '../components/EstablishmentForm.vue'
 import EstablishmentMap from '../components/EstablishmentMap.vue'
 import FindPlaces from '@/components/FindPlaces.vue'
+import RequestView from '../views/RequestView.vue'
+
 export default {
   components: {
     LeftSidebar,
@@ -29,7 +38,8 @@ export default {
     TheHeader,
     EstablishmentForm,
     EstablishmentMap,
-    FindPlaces
+    FindPlaces,
+    RequestView
   },
   data() {
     return {
@@ -52,16 +62,17 @@ export default {
       this.currentView = 'EstablishmentMap'
     },
     setView(view) {
-      // troca entre os modos: feed, form, map
       this.currentView =
         view === 'feed'
           ? 'TheFeed'
           : view === 'form'
           ? 'EstablishmentForm'
-          : view == 'map'
-          ?'EstablishmentMap'
+          : view === 'map'
+          ? 'EstablishmentMap'
+          : view === 'request'
+          ? 'RequestView'
           : 'FindPlaces'
-    },
+    }
   }
   
  
@@ -79,6 +90,16 @@ html, body {
   overflow: hidden; /* evita que a página role */
   width: 100%;
 }
+.hide {
+  display: none !important;
+}
+.requestView {
+  grid-column: span 3; /* ocupa coluna do meio + direita */
+  width: 100%;
+  padding: 20px;
+  overflow-y: auto;
+}
+
 .layout-home {
   background-color: #18191a;
   color: #e4e6eb;

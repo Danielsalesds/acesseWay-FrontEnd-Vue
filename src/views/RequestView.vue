@@ -1,18 +1,17 @@
 <template>
-    <TheHeader/>
-    <body>
+    <main class="request-page">
         <RequestTable
             :requests="requests"
             :loading="loading"
             @approve="approveRequest"
             @deny="denyRequest"
         />
-    </body>
+    </main>
 </template>
 
 <script setup>
     import RequestTable from '@/components/RequestTable.vue'
-    import TheHeader from '@/components/TheHeader.vue'
+    //import TheHeader from '@/components/TheHeader.vue'
     import { ref, onMounted } from 'vue'
     const requests = ref([])
     const loading = ref(false)
@@ -62,9 +61,11 @@
     }
     onMounted(getRequests)
 </script>
-<style>
-    body{
-        background-color: #18191a;
-        color: white;
-    }
+<style scope>
+.request-page {
+background-color: #18191a;
+color: white;
+width: 100%;
+padding: 20px;
+}
 </style>

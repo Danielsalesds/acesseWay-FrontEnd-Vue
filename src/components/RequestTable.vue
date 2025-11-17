@@ -52,101 +52,125 @@
     })
 </script>
 <style scoped>
-    .title{
-        margin-top: 100px; 
+    .title {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 26px;
+}
+
+/* Container centralizando a tabela totalmente */
+.table-request {
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+}
+
+/* Tabela mais elegante e larga */
+table {
+    width: 100%;
+    max-width: 1300px; /* aumenta a largura real */
+    border-collapse: collapse;
+    background-color: #242526;
+    border-radius: 10px;
+    overflow: hidden; /* cantos arredondados reais */
+    table-layout: auto; /* deixa as colunas se ajustarem automaticamente */
+}
+
+/* Cabeçalho */
+th {
+    padding: 18px 12px;
+    background-color: #3a3b3c;
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 2px solid #555;
+    text-align: left;
+    white-space: nowrap; /* coluna mais limpa */
+}
+
+/* Linhas */
+td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #444;
+    color: #e4e6eb;
+    max-width: 250px;           
+    overflow: hidden;
+    text-overflow: ellipsis;     /* evita textos quebrando */
+    white-space: nowrap;         /* deixa em linha única elegante */
+}
+
+/* Cor das linhas alternadas */
+tbody tr:nth-child(odd) {
+    background-color: #1f1f1f;
+}
+tbody tr:nth-child(even) {
+    background-color: #2a2b2c;
+}
+
+/* Hover bonito */
+tbody tr:hover {
+    background-color: #333;
+    transition: 0.2s;
+}
+
+/* Imagens arredondadas */
+td img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* Botões */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* Aprovar */
+.btn-approve {
+    background-color: #198754;
+    color: #fff;
+}
+.btn-approve:hover {
+    background-color: #157347;
+}
+.btn-approve:active {
+    transform: scale(0.97);
+}
+
+/* Negar */
+.btn-deny {
+    background-color: #952034;
+    color: #fff;
+}
+.btn-deny:hover {
+    background-color: #b7314c;
+}
+.btn-deny:active {
+    transform: scale(0.97);
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    table {
+        max-width: 100%;
+        font-size: 14px;
     }
-    .table-request{
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-        /* align-items: center; */
-    }
-    table{
-        table-layout: fixed;
-        
-        width: 100%;
-        border-collapse: collapse;
-        border: none;
-    }
-    td {
+    td, th {
         padding: 10px;
-        text-align: center;
-        vertical-align: middle;
-        padding: 12px 10px;
-  
-        border-bottom: 2px dotted #555; 
-        
-        border-left: none;
-        border-right: none;
+        white-space: normal;
     }
-    th{
-        padding: 20px;
-        background-color: #3a3b3c;
-        text-align: left;
-        border-bottom: 2px solid #555;
-    }
-    tbody tr td:nth-child(odd) {
-        background-color: #242526; 
-    }
+}
 
-    tbody tr td:nth-child(even) {
-        background-color: #2a2b2c; 
-    }
-
-    .action-buttons{
-        display: flex;
-        justify-content: space-between;
-    }
-    .btn {
-        background-color: #0d6efd; 
-        color: #ffffff;             
-        padding: 10px 20px;
-        border: none;                
-        border-radius: 5px;          
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-    }
-    .btn:hover {
-        background-color: #0b5ed7; 
-    }
-    .btn:active {
-        background-color: #0a58ca;
-        transform: scale(0.98); 
-    }
-    .btn:focus {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4); 
-    }
-
-    .btn-approve {
-        background-color: #198754; /* Verde sucesso */
-    }
-    .btn-approve:hover {
-        background-color: #157347;
-    }
-    .btn-approve:active {
-        background-color: #146c43;
-    }
-    .btn-approve:focus {
-        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.4);
-    }
-
-    .btn-deny {
-        background-color: #952034; 
-    }
-
-    .btn-deny:hover {
-        background-color: #b7314c; 
-    }
-
-    .btn-deny:active {
-        background-color: #740f1c;
-        border-color: #740f1c;
-    }
-
-    .btn-deny:focus {
-        box-shadow: 0 0 0 4px rgba(149, 32, 52, 0.4);
-    }
 </style>
