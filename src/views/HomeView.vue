@@ -91,7 +91,9 @@ html, body {
 .content {
   flex: 1;
   display: grid;
-  grid-template-columns: 300px 1fr 300px;
+  /* Antes estava com 3 colunas, agora só duas. A barra lateral direita foi removida, estava sem utilidade.
+  /* grid-template-columns: 300px 1fr 300px; */
+  grid-template-columns: 300px 1fr;
   gap: 20px;
   padding-top: 60px; /* altura do header fixo */
   height: calc(100vh - 60px); /* altura restante */

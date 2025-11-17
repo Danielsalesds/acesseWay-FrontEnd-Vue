@@ -5,9 +5,13 @@ export const useEstablishmentStore = defineStore('establishment', {
     reviews: [],
     loading: false,
     error: null,
-    url: "https://acessway.onrender.com"
+    url: "https://acessway.onrender.com",
+    focusedEstablishmentId: null
   }),
   actions:{
+    focusOnEstablishment(id){
+        this.focusedEstablishmentId = id 
+    },
     async getEstablishment() {
         this.loading = true
         try{

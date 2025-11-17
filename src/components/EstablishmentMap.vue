@@ -1,19 +1,39 @@
 <template>
   <!-- <div class="map-container"> -->
-    
+
   <!-- </div> -->
   <div ref="mapEl" class="map"></div>
+  <Dialog v-model:visible="dialogVisible" modal :style="{ width: '25rem' }">
+
+    <div class="main-info">
+      <img v-if="selected.imageUrl != ''" :src="selected.imageUrl" alt="" width="30%">
+      <img v-else src="https://placehold.net/default.png"
+                                    alt="Estabelecimento sem imagem definida" width="75px" height="75px">
+      <h3>{{ selected.name }}</h3>
+    </div>
+    <p>
+      <i class="fa-brands fa-accessible-icon" style="color: #0d47a1"></i>
+      Acessibilidade <strong>08/10</strong>
+    </p>
+    <router-link :to="{ name: 'establishmentDetails', params: { id: selected.id } }">
+      Ver detalhes
+    </router-link>
+  </Dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useEstablishmentStore } from '@/stores/establishmentStore';
+import Dialog from 'primevue/dialog';
 import axios from 'axios'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
+const dialogVisible = ref(false)
 const mapEl = ref(null)
+const selected = ref(Object)
 const apiResponse = ref(null)
 let map = null
+const store = useEstablishmentStore();
 
 const buildingIcon = L.icon({
   iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
@@ -32,7 +52,7 @@ onMounted(async () => {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
   }).addTo(map)
-
+  await store.getEstablishment()
   try {
     const { data } = await axios.get('https://acessway.onrender.com/establishment')
     console.log('Retorno completo da API:', data)
@@ -51,12 +71,18 @@ onMounted(async () => {
       if (isNaN(lat) || isNaN(lng)) return
 
       const marker = L.marker([lat, lng], { icon: buildingIcon }).addTo(map)
-      marker.bindPopup(`
-        <b>${e.name}</b><br>
-        ${e.address.street}, ${e.address.number}<br>
-        ${e.address.city} - ${e.address.state}<br>
-        <small>${e.email || ''}</small>
-      `)
+      // marker.bindPopup(`
+      //   <b>${e.name}</b><br>
+      //   ${e.address.street}, ${e.address.number}<br>
+      //   ${e.address.city} - ${e.address.state}<br>
+      //   <small>${e.email || ''}</small>
+      // `)
+      marker.on("click", () => {
+        console.log("E: " + e.name);
+        selected.value = e;
+        console.log(selected.value);
+        dialogVisible.value = true;
+      });
       markers.push(marker)
     })
 
@@ -70,24 +96,46 @@ onMounted(async () => {
 })
 
 onUnmounted(() => map && map.remove())
+
+watch(()=>store.focusedEstablishmentId,
+  (newId)=>{
+  if (!newId || map) {
+      return;
+  }
+  const establishment = store.establishments.find(e => e.id === newId);
+  console.log("Establishment map: "+establishment)
+  if (establishment) {
+      const latLng = [establishment.latitude, establishment.longitude];
+      console.log("Setando latLng: ")
+      map.setView(latLng, 16, {
+        animate: true,
+        pan: {
+          duration: 0.5
+        }
+      });
+  }
+})
 </script>
 
 <style scoped>
-/* .map-container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 1rem auto;
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-} */
+img {
+  border-radius: 10px;
+}
+
+.main-info {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
 
 .map {
-  height: 500px;
+  height: 100%;
+  width: 100%;
+  margin: 0;
   border-radius: 6px;
   border: 1px solid #ddd;
-  margin: 10px;
+  box-sizing: border-box;
 }
 
 .api-debug {

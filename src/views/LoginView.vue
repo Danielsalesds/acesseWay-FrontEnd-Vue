@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="logo">
-      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200" preview/>
+      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200"/>
       <h1>AcessWay</h1>
       <h3>Conectando pessoas, quebrando barreiras.</h3>
     </div>
@@ -10,22 +10,40 @@
       <!-- Formulário de login -->
       <form class="login-form" @submit.prevent="login">
 
-        <label for="email">Email</label>
-        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com">
 
-        <label for="password">Senha</label>
-        <input id="password" type="password" v-model="form.password" required placeholder="••••••••••"/>
-        <InputText/>
-        <button type="submit" class="login-btn">Entrar</button>
+        <FloatLabel class="form-field">
+          <InputText id="email" v-model="form.email" required />
+          <label for="email">Email</label>
+        </FloatLabel>
+        <FloatLabel class="form-field">
+          <InputText id="password" type="password" v-model="form.password" required/>
+          <label for="password">Senha</label>
+        </FloatLabel>
+
+        <!-- <button type="submit" class="login-btn">Entrar</button> -->
+        <Button type="submit" label="Entrar" :loading="store.loading" class="login-btn"/>
+        <div v-if="store.loading" class="loader-overlay">
+          <ProgressSpinner aria-label="Loading" />
+        </div>
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
-      </form>
 
-      <hr />
+
+        <!-- <label for="email">Email</label>
+        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com" class="native-input"> -->
+
+
+        <!-- <label for="password">Senha</label>
+        <input id="password" type="password" v-model="form.password" required placeholder="••••••••••" class="native-input"/> -->
+      </form>
+      <Divider />
+      <!-- <hr /> -->
       <!-- Criar nova conta -->
-      <button class="signup-btn" @click="Signup">Criar nova conta</button>
-      <div v-if="store.loading" class="loader-overlay">
+      <!-- <button class="signup-btn" @click="Signup">Criar nova conta</button> -->
+      <Button label="Criar nova conta" severity="success" variant="outlined" @click="Signup" style="width: 100%" />
+
+      <!-- <div v-if="store.loading" class="loader-overlay">
         <div class="loader"></div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -36,7 +54,10 @@
   import  {useAuthStore} from '@/stores/loginStore'
   import Image from 'primevue/image'
   import InputText from 'primevue/inputtext'
-
+  import  FloatLabel  from 'primevue/floatlabel'
+  import Button from 'primevue/button'
+  import Divider from 'primevue/divider'
+  import  ProgressSpinner  from 'primevue/progressspinner'
   const store = useAuthStore()
   const router = useRouter()
   
@@ -72,6 +93,13 @@
   }
 </style>
 <style scoped>
+.form-field {
+  margin-bottom: 30px; 
+  display: block;
+}
+.form-field :deep(.p-inputtext) {
+  width: 100%;
+}
 .logo h1{ 
   margin: 0;
 }
@@ -105,8 +133,7 @@
 }
 
 /* Inputs */
-.login-box input[type="text"],
-.login-box input[type="password"] {
+.login-box .native-input{
   width: 90%;
   padding: 12px 15px;
   margin-bottom: 12px;
@@ -196,14 +223,14 @@
   color: #606770;
   margin-top: 20px;
 }
-label {
+/* label {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
   font-size: 14px;
   color: #333;
   text-align: left;
-}
+} */
 .loader-overlay{
   position: fixed;
   z-index: 9999;
@@ -216,9 +243,9 @@ label {
   justify-content: center;
   align-items: center;
 }
-.loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
+/* .loader {
+  border: 16px solid #f3f3f3; 
+  border-top: 16px solid #3498db;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -228,5 +255,5 @@ label {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
+} */
 </style>

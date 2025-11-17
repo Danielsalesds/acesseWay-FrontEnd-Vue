@@ -186,11 +186,11 @@ async function handleUpdate() {
 
 }
 </script>
-<style>
+<!-- <style>
   body{
     background-color: #f0f2f5;
   }
-</style>
+</style> -->
 <style scoped>
 .edit-profile {
   display: flex;
