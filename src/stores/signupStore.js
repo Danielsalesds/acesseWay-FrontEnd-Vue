@@ -19,6 +19,7 @@ export const useStore = defineStore('profile', {
     async createProfile(newUser) {
       this.loading = true
       this.error = null
+      
       try {
         const { data } = await api.post('https://acessway.onrender.com/auth', newUser,{ withCredentials: true })
         this.user = data || null
