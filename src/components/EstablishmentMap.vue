@@ -7,17 +7,21 @@
 
     <div class="main-info">
       <img v-if="selected.imageUrl != ''" :src="selected.imageUrl" alt="" width="30%">
-      <img v-else src="https://placehold.net/default.png"
-                                    alt="Estabelecimento sem imagem definida" width="75px" height="75px">
+      <img v-else src="https://placehold.net/default.png" alt="Estabelecimento sem imagem definida" width="75px"
+        height="75px">
       <h3>{{ selected.name }}</h3>
     </div>
-    <p>
-      <i class="fa-brands fa-accessible-icon" style="color: #0d47a1"></i>
-      Acessibilidade <strong>08/10</strong>
-    </p>
-    <router-link :to="{ name: 'establishmentDetails', params: { id: selected.id } }">
-      Ver detalhes
-    </router-link>
+    <div class="selected-info">
+      <span>
+        <i class="fa-brands fa-accessible-icon" style="color: #93C5FD"></i>
+        Nivel de acessibilidade: {{ selected.averageRating * 100 }}%
+      </span>
+    </div>
+    <template #footer>
+      <router-link :to="{ name: 'establishmentDetails', params: { id: selected.id } }" class="link-acessivel">
+        Ver detalhes
+      </router-link>
+    </template>
   </Dialog>
 </template>
 
@@ -25,7 +29,6 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useEstablishmentStore } from '@/stores/establishmentStore';
 import Dialog from 'primevue/dialog';
-// import axios from 'axios'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 const dialogVisible = ref(false)
@@ -56,17 +59,14 @@ onMounted(async () => {
   await store.getEstablishment()
 
   try {
-    // const { data } = await axios.get('https://acessway.onrender.com/establishment')
     const establishments = store.establishments
     console.log('Retorno completo da API:', establishments)
-    apiResponse.value = JSON.stringify(establishments, null, 2) // Mostra na tela formatado
-
-    // const establishments = data.content || []
+    apiResponse.value = JSON.stringify(establishments, null, 2)
     if (!establishments.length) {
       alert('Nenhum estabelecimento encontrado.')
       return
     }
- 
+
 
     const markers = []
     establishments.forEach(e => {
@@ -75,12 +75,6 @@ onMounted(async () => {
       if (isNaN(lat) || isNaN(lng)) return
 
       const marker = L.marker([lat, lng], { icon: buildingIcon }).addTo(map)
-      // marker.bindPopup(`
-      //   <b>${e.name}</b><br>
-      //   ${e.address.street}, ${e.address.number}<br>
-      //   ${e.address.city} - ${e.address.state}<br>
-      //   <small>${e.email || ''}</small>
-      // `)
       marker.on("click", () => {
         console.log("E: " + e.name);
         selected.value = e;
@@ -101,14 +95,14 @@ onMounted(async () => {
 
 onUnmounted(() => map && map.remove())
 
-watch(()=>store.focusedEstablishmentId,
-  (newId)=>{
-  if (!newId || !map) {
+watch(() => store.focusedEstablishmentId,
+  (newId) => {
+    if (!newId || !map) {
       return;
-  }
-  const establishment = store.establishments.find(e => e.id === newId);
-  console.log("Establishment map: "+establishment)
-  if (establishment) {
+    }
+    const establishment = store.establishments.find(e => e.id === newId);
+    console.log("Establishment map: " + establishment)
+    if (establishment) {
       const latLng = [establishment.latitude, establishment.longitude];
       console.log("Setando latLng: ")
       map.setView(latLng, 16, {
@@ -117,11 +111,27 @@ watch(()=>store.focusedEstablishmentId,
           duration: 0.5
         }
       });
-  }
-})
+    }
+  })
 </script>
 
 <style scoped>
+.link-acessivel {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-acessivel:hover {
+  text-decoration: underline;
+  color: #ff9999;
+}
+
+.selected-info {
+  margin-top: 10px;
+
+}
+
 img {
   border-radius: 10px;
 }

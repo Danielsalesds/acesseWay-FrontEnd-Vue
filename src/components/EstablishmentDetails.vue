@@ -7,9 +7,14 @@
         <div class="header-hero">
             <h1>{{ establishment.name }}</h1>
             <div class="info-review">
-                <StarRating :rating="establishment.averageRating"></StarRating>
-                <p>({{ mediaFormatada }}) ({{ reviews.length }} avaliações) </p>
+                <StarRating :rating="establishment.averageRating * 5"
+                    :style="{ color: getColor(establishment.averageRating) }"></StarRating>
+                <p>({{ reviews.length }} avaliações)</p>
             </div>
+            <p style="margin-top: 0px; font-weight: bold;">
+                Nível de acessibilidade: {{ toPercent(establishment.averageRating) }}%
+            </p>
+
         </div>
         <div class="columns">
             <main class="main-column">
@@ -33,7 +38,7 @@
                             <AccordionContent>
                                 <p>{{ q.question }}</p>
                                 <SelectButton v-model="q.answer" :options="answerOptions" optionLabel="label"
-                                    defaultValue="NO" optionValue="value" />
+                                    optionValue="value" />
                             </AccordionContent>
                         </AccordionPanel>
                     </Accordion>
@@ -52,31 +57,76 @@
                 <li v-for="r in reviews" :key="r.id">
                     <div class="card">
                         <div class="card-header">
-                            <Avatar v-if="r.userImageUrl" :image="r.userImageUrl" size="large"
-                                shape="circle" ariaLabel="Foto de r.firstName" />
+                            <Avatar v-if="r.userImageUrl" :image="r.userImageUrl" size="large" shape="circle"
+                                :ariaLabel="getAriaLabelAvatar(r.firstName)" />
                             <Avatar v-else icon="pi pi-user" shape="circle" ariaLabel="Avatar do usuário" size="large"
                                 style="background-color: #ece9fc; color: #2a1261" />
                             <span style="font-weight: bold;">{{ r.firstName }} {{ r.lastName }}</span>
                             <div class="comment-date">
                                 <small>{{ formatDate(r.createdAt) }}</small>
                             </div>
+                            <span :style="{ color: getColor(r.rating), }" class="percent-comment">{{ r.rating * 100 }}
+                                %</span>
                         </div>
                         <Panel v-if="r.comment" class="review-panel" style="margin-top: 10px;">
                             <p class="comment-text">{{ r.comment }}</p>
                         </Panel>
+                        <Button v-if="reviewExpanded & selectedReview===r.id " icon="pi pi-chevron-up" iconPos="right" label="Ocultar detalhes"
+                            style="margin-left: auto;" class="btn-toggle-review"
+                            @click="reviewExpanded = false, selectedReview = ''"  />
+                        <Button v-else icon="pi pi-chevron-down" iconPos="right" label="Ver detalhes"
+                            style="margin-left: auto;" class="btn-toggle-review"
+                            @click="reviewExpanded = !reviewExpanded;selectedReview = r.id" />
+
+                        <div v-if="reviewExpanded & r.id === selectedReview" class="tags-container">
+                            <div v-for="q in r.questions" :key="q.questionKey" class="review-details">
+                                <Tag v-if="q.answer === 'YES'" icon="pi pi-check" severity="success"
+                                    :value="editQuestionKey(q.questionKey)" class="custom-tag" />
+                                <Tag v-else-if="q.answer === 'PARTIALLY'" icon="pi pi-exclamation-triangle"
+                                    severity="warn" :value="editQuestionKey(q.questionKey)" class="custom-tag" />
+                                <Tag v-else icon="pi pi-times" severity="danger" :value="editQuestionKey(q.questionKey)"
+                                    class="custom-tag" />
+                            </div>
+                        </div>
                     </div>
                 </li>
             </main>
+
             <aside class="left-column">
                 <h3>Informações</h3>
-                <h4><i class="fa-solid fa-map-pin" style="color: #ff0000;"></i> Endereço: </h4>
-                <!-- <p> {{ establishment.address.city }} - {{ establishment.address.state }}</p>
-                <p> {{ establishment.address.neighborhood }}</p> -->
-                <p> {{ establishment.address.street }} - {{ establishment.address.number }}</p>
-                <p>
-                    <i class="fa-solid fa-phone" style="color: #ff0000;"></i>
-                    <strong>Telefone: </strong> {{ establishment.phone }}
-                </p>
+                <div class="info-section">
+                    <h4>Contato</h4>
+                    <div class="info-item">
+                        <i class="pi pi-envelope icon-style" aria-hidden="true"></i>
+                        <span>
+                            <strong>Email: </strong>
+                            <a href="mailto:{{establishment.email}}" class="link-acessivel">
+                                {{ establishment.email }}
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <i class="pi pi-phone icon-style" aria-hidden="true"></i>
+                        <span>
+                            <strong>Telefone: </strong>
+                            <a href="tel:{{ establishment.phone }}" class="link-acessivel">
+                                {{ establishment.phone }}
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <Divider />
+
+                <div class="info-section">
+                    <h4>Endereço</h4>
+
+                    <address style="font-style: normal;">
+                        <p class="m-0">{{ establishment.address.street }}, {{ establishment.address.number }}</p>
+                        <p class="m-0">{{ establishment.address.neighborhood }}</p>
+                        <p class="m-0 mb-2">{{ establishment.address.city }} - {{ establishment.address.state }}</p>
+                    </address>
+                </div>
             </aside>
         </div>
     </div>
@@ -89,7 +139,7 @@
 import TheHeader from '@/components/TheHeader.vue'
 import { useEstablishmentStore } from '@/stores/establishmentStore';
 import { useAuthStore } from '@/stores/loginStore';
-import { defineProps, onMounted, ref, computed } from 'vue'
+import { defineProps, onMounted, ref} from 'vue'
 import StarRating from './StarRating.vue';
 import Button from 'primevue/button';
 import SelectButton from 'primevue/selectbutton';
@@ -99,9 +149,8 @@ import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Panel from 'primevue/panel';
-
-
-
+import Tag from 'primevue/tag';
+import Divider from 'primevue/divider';
 import Textarea from 'primevue/textarea';
 import IftaLabel from 'primevue/iftalabel';
 import Dialog from 'primevue/dialog';
@@ -109,21 +158,32 @@ import Dialog from 'primevue/dialog';
 
 
 const store = useEstablishmentStore();
+const selectedReview = ref("")
 const userStore = useAuthStore();
-const reviewOpen = ref(false)
+const reviewExpanded = ref(false);
+const reviewOpen = ref(false);
 const reviewComment = ref("");
+const getAriaLabelAvatar = (firstName) => {
+    return `Foto de ${firstName}`;
+}
+const getColor = (averageRating) => {
+    if (averageRating >= 0.8) return '#22C55E';
+    if (averageRating >= 0.5) return '#EAB308';
+    return '#EF4444';
+}
 function formatDate(date) {
-  return new Date(date).toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+    return new Date(date).toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    })
 }
 const editQuestionKey = (qk) => {
-    const index = qk.indexOf('_')
-    const text = qk.substr(index + 1)
+    const index = qk.indexOf('_');
+    const type = qk.substr(index + 1);
+    const text = type[0] + type.substr(1).toLowerCase();
     return text;
 }
 const answerOptions = ref([
@@ -198,12 +258,15 @@ const newReview = {
 }
 const establishment = ref(null)
 const reviews = ref(Array)
-const mediaFormatada = computed(() => {
-    if (establishment.value?.averageRating) {
-        return establishment.value.averageRating.toFixed(1);
-    }
-    return '...';
-});
+// const mediaFormatada = computed(() => {
+//     if (establishment.value?.averageRating) {
+//         return establishment.value.averageRating.toFixed(1);
+//     }
+//     return '...';
+// });
+const toPercent = (averageRating) => {
+    return averageRating * 100;
+}
 onMounted(async () => {
     console.log(props.id)
     establishment.value = await store.getEstablishmentById(props.id);
@@ -237,6 +300,24 @@ body {
 </style>
 
 <style scoped>
+.percent-comment {
+    font-weight: bold;
+    margin-left: auto;
+}
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;             
+    margin-top: 1rem;
+}
+ .custom-tag {
+    background: transparent !important;
+    border: 1px solid currentColor; 
+}
+.p-tag-success.custom-tag { color: #4ade80 !important; }
+.p-tag-danger.custom-tag  { color: #f87171 !important; }
+.p-tag-warn.custom-tag    { color: #facc15 !important; }
+
 .review-panel {
     background: var(--card-color);
     border-radius: 12px;
@@ -255,18 +336,21 @@ body {
     border: none;
     padding-top: 0.5rem;
 }
+
 .comment-text {
     color: #e4e6eb;
     font-size: 1rem;
     line-height: 1.6;
     font-weight: 400;
     text-align: start;
-    background-color: transparent; 
+    background-color: transparent;
     padding: 0;
 }
+
 .comment-text:empty {
     display: none;
 }
+
 .main {
     max-width: 1200px;
     margin: 0 auto;
@@ -278,11 +362,32 @@ h4 {
     margin-bottom: 0px;
 }
 
-.radio {
+.info-section {
+    align-items: center;
+}
+
+.info-item {
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 5px;
-    gap: 5px;
+}
+
+.link-acessivel {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.link-acessivel:hover {
+    text-decoration: underline;
+    color: #ff9999;
+}
+
+.icon-style {
+    color: #ff4d4d;
+    margin-right: 10px;
+    font-size: 1.2rem;
 }
 
 .header-hero h1 {

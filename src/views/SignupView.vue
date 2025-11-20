@@ -62,7 +62,7 @@
             </label>
             <label class="radio-box" for="role-adm">
               Empresa
-              <input id="role-adm" type="radio" value="EMPRESA" v-model="form.role" />
+              <input id="role-adm" type="radio" value="COMPANY" v-model="form.role" />
             </label>
           </div>
         </fieldset>
@@ -187,13 +187,13 @@ input, select {
   border-radius: 10px;
   font-size: 15px;
   outline: none;
-  background: #fafbfc;
+  background: #000000;
   transition: all 0.25s ease;
 }
 
 input:focus, select:focus {
   border-color: #1877f2;
-  background: #fff;
+  background: #000000;
   box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.20);
 }
 

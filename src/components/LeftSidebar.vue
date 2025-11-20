@@ -4,7 +4,7 @@
       <li @click="$emit('change-view', 'feed')">
         <i class="fas fa-home"></i> Feed
       </li>
-      <div v-if="role==='empresa'">
+      <div v-if="role==='company'">
         <li @click="$emit('change-view', 'form')">
         <i class="fas fa-plus-square"></i> Novo Estabelecimento
         </li>

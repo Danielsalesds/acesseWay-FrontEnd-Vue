@@ -23,11 +23,15 @@
                                     width="75px" height="75px">
                                 <img v-else src="https://placehold.net/default.png"
                                     alt="Estabelecimento sem imagem definida" width="75px" height="75px">
-                                <p>{{ e.name }}</p>
+                                <div style="display: flex;flex-direction: column;">
+                                    <p style="margin: 0; padding: 0;">{{ e.name }}</p>
+                                    <small :style="{ color: getColor(e.averageRating) }">({{ getLabel(e.averageRating) }})</small>
+                                </div>
                                 <Button v-if="splitterLayout == 'vertical'" icon="pi pi-map-marker" rounded text
                                     severity="secondary" aria-label="Ver no mapa"
                                     @click.stop="store.focusOnEstablishment(e.id)" class="btn-map-mobile" />
                             </div>
+                            <StarRating :rating="e.averageRating * 5" :style="{ color: getColor(e.averageRating) }" />
                         </div>
                     </li>
                 </ul>
@@ -48,18 +52,29 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import EstablishmentMap from './EstablishmentMap.vue';
+import StarRating from './StarRating.vue';
 import { useEstablishmentStore } from '@/stores/establishmentStore';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-
 const router = useRouter();
 const store = useEstablishmentStore();
 const searchedName = ref("");
 const searched = ref(false);
 const splitterLayout = ref('horizontal');
+
 onMounted(() => {
     store.getEstablishment();
 })
+const getLabel = (averageRating) => {
+    if (averageRating >= 0.8) return "Acessível";
+    if (averageRating >= 0.5) return "Parcialmente acessível";
+    return "Nada acessível";
+}
+const getColor = (averageRating) => {
+    if (averageRating >= 0.8) return '#22C55E'; 
+    if (averageRating >= 0.5) return '#EAB308';
+    return '#EF4444';
+}
 const search = () => {
     store.getEstablishment(searchedName.value);
     searched.value = true;
@@ -111,6 +126,12 @@ const goToDetails = (id) => {
     flex-direction: column;
     box-sizing: border-box;
     gap: 10px;
+}
+
+.rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .card {
@@ -180,6 +201,7 @@ img {
         min-height: 400px;
         height: 40vh;
     }
+
     .list-panel {
         height: 50vh;
     }
