@@ -25,7 +25,7 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useEstablishmentStore } from '@/stores/establishmentStore';
 import Dialog from 'primevue/dialog';
-import axios from 'axios'
+// import axios from 'axios'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 const dialogVisible = ref(false)
@@ -52,17 +52,21 @@ onMounted(async () => {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
   }).addTo(map)
-  await store.getEstablishment()
-  try {
-    const { data } = await axios.get('https://acessway.onrender.com/establishment')
-    console.log('Retorno completo da API:', data)
-    apiResponse.value = JSON.stringify(data, null, 2) // Mostra na tela formatado
 
-    const establishments = data.content || []
+  await store.getEstablishment()
+
+  try {
+    // const { data } = await axios.get('https://acessway.onrender.com/establishment')
+    const establishments = store.establishments
+    console.log('Retorno completo da API:', establishments)
+    apiResponse.value = JSON.stringify(establishments, null, 2) // Mostra na tela formatado
+
+    // const establishments = data.content || []
     if (!establishments.length) {
       alert('Nenhum estabelecimento encontrado.')
       return
     }
+ 
 
     const markers = []
     establishments.forEach(e => {
@@ -99,7 +103,7 @@ onUnmounted(() => map && map.remove())
 
 watch(()=>store.focusedEstablishmentId,
   (newId)=>{
-  if (!newId || map) {
+  if (!newId || !map) {
       return;
   }
   const establishment = store.establishments.find(e => e.id === newId);

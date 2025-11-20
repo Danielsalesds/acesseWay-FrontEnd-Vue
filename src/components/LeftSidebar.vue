@@ -65,4 +65,9 @@ const role = computed(() => store.role?.toLowerCase())
   background-color: #3a3b3c;
   border-radius: 8px;
 }
+@media (max-width: 768px) {
+  .left-sidebar {
+    display: none;
+  }
+}
 </style>

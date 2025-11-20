@@ -6,16 +6,19 @@ export const useEstablishmentStore = defineStore('establishment', {
     loading: false,
     error: null,
     url: "https://acessway.onrender.com",
-    focusedEstablishmentId: null
+    focusedEstablishmentId: null,
+    searchedName: null
   }),
   actions:{
     focusOnEstablishment(id){
         this.focusedEstablishmentId = id 
+        console.log("Id alterado: "+this.focusedEstablishmentId)
     },
-    async getEstablishment() {
+    async getEstablishment(name='') {
         this.loading = true
         try{
-            const response = await fetch(`${this.url}/establishment`);
+            console.log("Pesquisado com nome: "+name)
+            const response = await fetch(`${this.url}/establishment?name=${name}`);
             const data = await response.json()
             this.establishments = data.content
             console.log(data.content)

@@ -134,12 +134,16 @@ html, body {
     grid-template-columns: 80px 1fr;
   }
 }
-
-@media (max-width: 800px) {
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr; 
+  }
+}
+/* @media (max-width: 800px) {
   .content {
     grid-template-columns: 1fr;
   }
-}
+} */
 </style>
 
 
