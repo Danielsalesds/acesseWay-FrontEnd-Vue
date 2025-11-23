@@ -74,7 +74,7 @@ const search = async () => {
   position: fixed;
   top: 0;
   left: 0;
-  width: 98%;
+  width: 100%;
   height: 50px;
   background-color: #242526;
   color: white;

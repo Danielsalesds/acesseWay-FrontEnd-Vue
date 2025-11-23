@@ -7,9 +7,19 @@
       <form @submit.prevent="handleSubmit" aria-label="Formulário de criação de conta">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <input type="text" placeholder="Nome" v-model="form.firstName" required />
-          <input type="text" placeholder="Sobrenome" v-model="form.lastName" required />
+          <!-- <input type="text" placeholder="Nome" v-model="form.firstName" required />
+          <input type="text" placeholder="Sobrenome" v-model="form.lastName" required /> -->
+
+          <FloatLabel class="form-field">
+            <InputText id="firstName" v-model="form.firstName" required aria-required="true" />
+            <label for="firstName">Nome</label>
+          </FloatLabel>
+          <FloatLabel class="form-field">
+            <InputText id="lastName" v-model="form.lastName" required aria-required="true" />
+            <label for="lastName">Sobrenome</label>
+          </FloatLabel>
         </div>
+
 
         <!-- Data de nascimento -->
         <div class="birthdate">
@@ -28,12 +38,16 @@
             </select>
           </div>
         </div>
-          
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px;">
+          <span>Gênero</span>
+          <SelectButton v-model="form.gender" :options="genderOptions" optionLabel="label" optionValue="value" />
+        </div>
         <!-- Gênero -->
-        <fieldset class="gender">
+        <!-- <fieldset class="gender">
           <legend>Gênero</legend>
           <div class="options-box">
-            <label class="radio-box" for="gender-female">
+            <SelectButton :options="genderOptions" optionLabel="label" optionValue="value"/> -->
+        <!-- <label class="radio-box" for="gender-female">
               Feminino
               <input id="gender-female" type="radio" value="FEMALE" v-model="form.gender" />
             </label>
@@ -44,15 +58,20 @@
             <label class="radio-box" for="gender-other">
               Outro
               <input id="gender-other" type="radio" value="OTHER" v-model="form.gender" />
-            </label>
-          </div>
-        </fieldset>
-
+            </label> -->
+        <!-- </div>
+        </fieldset> -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px;">
+          <span>Tipo da conta</span>
+          <SelectButton v-model="form.role" :options="roleOptions" optionLabel="label" optionValue="value"
+            class="custom-select" />
+        </div>
         <!-- Tipo de conta -->
-        <fieldset class="account-type">
+        <!-- <fieldset class="account-type">
           <legend>Tipo de conta</legend>
           <div class="options-box">
-            <label class="radio-box" for="role-normal">
+            <SelectButton :options="roleOptions" optionLabel="label" optionValue="value"/> -->
+        <!-- <label class="radio-box" for="role-normal">
               Usuário Comum
               <input id="role-normal" type="radio" value="NORMAL" v-model="form.role" />
             </label>
@@ -63,20 +82,32 @@
             <label class="radio-box" for="role-adm">
               Empresa
               <input id="role-adm" type="radio" value="COMPANY" v-model="form.role" />
-            </label>
-          </div>
-        </fieldset>
+            </label> -->
+        <!-- </div>
+        </fieldset> -->
 
         <!-- Contato e senha -->
-        <label for="email" class="sr-only">Email</label>
+        <!-- <label for="email" class="sr-only">Email</label>
         <input id="email" type="email" placeholder="Email" v-model="form.email" required aria-required="true" />
 
         <label for="password" class="sr-only">Senha</label>
-        <input id="password" type="password" placeholder="Senha" v-model="form.password" required aria-required="true" />
+        <input id="password" type="password" placeholder="Senha" v-model="form.password" required
+          aria-required="true" /> -->
 
-        <button type="submit" class="signup-btn">Cadastre-se</button>
+        <FloatLabel class="form-field" style="margin-top: 30px; margin-bottom: 30px;">
+          <InputText id="email" v-model="form.email" required aria-required="true" />
+          <label for="email">Email</label>
+        </FloatLabel>
+        <FloatLabel class="form-field">
+          <InputText id="password" type="password" v-model="form.password" required aria-required="true" />
+          <label for="password">Senha</label>
+        </FloatLabel>
+
+        <Button type="submit" class="signup-btn" label="Cadastre-se"/>
       </form>
-
+      <div v-if="store.loading" class="loader-overlay">
+        <ProgressSpinner aria-label="Loading" />
+      </div>
       <a href="/" class="login-link" @click="goHome">Já tem uma conta?</a>
     </div>
   </div>
@@ -85,9 +116,26 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from '@/stores/signupStore'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import FloatLabel from 'primevue/floatlabel'
+import SelectButton from 'primevue/selectbutton';
+import ProgressSpinner from 'primevue/progressspinner'
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
 
 const store = useStore()
-
+const roleOptions = ref([
+  { label: 'Comum', value: 'NORMAL' },
+  { label: 'Profissional', value: 'PROFESSIONAL' },
+  { label: 'Empresa', value: 'COMPANY' }
+]);
+const genderOptions = ref([
+  { label: 'Masculino', value: 'MALE' },
+  { label: 'Feminino', value: 'FEMALE' },
+  { label: 'Outro', value: 'OTHER' }
+]);
 const form = ref({
   firstName: '',
   lastName: '',
@@ -96,32 +144,42 @@ const form = ref({
   role: 'NORMAL',
   email: '',
   password: '',
-  imageUrl: '' 
+  imageUrl: ''
 })
 
 const calend = ref({
-  meses: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
+  meses: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
   anos: Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
 })
 
 async function handleSubmit() {
   const formData = form.value
   const formattedBirthDate = `${formData.birthDate.year}-${String(formData.birthDate.month).padStart(2, '0')}-${String(formData.birthDate.day).padStart(2, '0')}`;
-  const  userToCreate = {
+  const userToCreate = {
     ...formData,
     birthDate: formattedBirthDate
   }
-  await store.createProfile(userToCreate)
+  try {
+    await store.createProfile(userToCreate)
+    setTimeout(() => {
+      router.push({ name: 'login' }); // Ou o path: '/login'
+    }, 1500);
+  } catch (error) {
+    console.log(error);
+  }
+
+
   form.value = {
-    firstName: '', 
-    lastName: '', 
-    birthDate: { day: 1, month: 1, year: new Date().getFullYear() }, 
+    firstName: '',
+    lastName: '',
+    birthDate: { day: 1, month: 1, year: new Date().getFullYear() },
     gender: '',
     role: 'NORMAL',
     email: '',
     password: '',
     imageUrl: ''
   }
+
 }
 </script>
 
@@ -136,39 +194,56 @@ async function handleSubmit() {
   overflow: hidden;
 }
 
+:deep(.custom-select .p-button.p-highlight) {
+  background-color: #0d47a1 !important;
+  border-color: #0d47a1 !important;
+  color: #ffffff !important;
+}
+
+.form-field :deep(.p-inputtext) {
+  width: 100%;
+}
+
 .signup-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #eef1f5;
+  background-color: #18191a;
+  /* background: #eef1f5; */
   min-height: 100vh;
   padding: 30px;
 }
 
 .signup-box {
-  background: #ffffff;
+  /* background: #ffffff; */
+  background-color: #242424;
+  border: 2px solid #333;
+  /* Uma borda sutil ajuda a definir o card */
+  border-radius: 8px;
   padding: 40px 45px;
   border-radius: 16px;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
   width: 500px;
   transition: all .2s ease;
 }
 
 .signup-box:hover {
-  box-shadow: 0 12px 38px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.08);
 }
 
 .signup-box h2 {
   text-align: center;
   font-size: 28px;
   font-weight: 800;
-  color: #1c1e21;
+  /* color: #1c1e21; */
+  color: #E4E6EB;
   margin-bottom: 6px;
 }
 
 .signup-box p {
   text-align: center;
-  color: #6f7280;
+  /* color: #6f7280; */
+  color: #B0B3B8;
   margin-bottom: 22px;
   font-size: 15px;
 }
@@ -177,9 +252,11 @@ async function handleSubmit() {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
+  margin-top: 40px;
 }
 
-input, select {
+
+select {
   width: 100%;
   padding: 13px 14px;
   margin-top: 6px;
@@ -191,7 +268,8 @@ input, select {
   transition: all 0.25s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   border-color: #1877f2;
   background: #000000;
   box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.20);
@@ -202,20 +280,29 @@ input:focus, select:focus {
   gap: 10px;
 }
 
-.gender, .account-type {
+.gender,
+.account-type {
   margin-top: 18px;
+  margin-bottom: 30px;
 }
 
 .gender legend,
 .account-type legend {
   font-weight: 600;
-  color: #1c1e21;
+  /* color: #1c1e21; */
+  color: #E4E6EB;
   margin-bottom: 6px;
+}
+
+label,
+span {
+  color: #E4E6EB;
 }
 
 .options-box {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  justify-content: center;
   gap: 12px;
   margin-top: 8px;
 }
@@ -255,7 +342,7 @@ input:focus, select:focus {
   font-weight: 600;
 }
 
-.signup-btn {
+/* .signup-btn {
   width: 100%;
   background: #42b72a;
   color: white;
@@ -268,12 +355,26 @@ input:focus, select:focus {
   cursor: pointer;
   transition: all .2s ease;
   letter-spacing: 0.3px;
+} */
+.signup-btn {
+  width: 100%;
+  color: white;
+  background-color: #0d47a1;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 25px;
+  transition: background-color 0.2s;
 }
 
-.signup-btn:hover {
+/* .signup-btn:hover {
   background: #36a420;
   transform: translateY(-1px);
-}
+} */
 
 .signup-btn:active {
   transform: scale(0.97);
@@ -283,7 +384,8 @@ input:focus, select:focus {
   display: block;
   text-align: center;
   margin-top: 20px;
-  color: #1877f2;
+  /* color: #1877f2; */
+  color: #64B5F6;
   font-size: 15px;
   text-decoration: none;
   transition: opacity .2s ease;
@@ -293,4 +395,17 @@ input:focus, select:focus {
   opacity: 0.8;
 }
 
+
+.loader-overlay {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

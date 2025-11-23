@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="logo">
-      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200"/>
+      <Image src="/Icon.png" alt="Logo da AcessWay: um mapa com um símbolo de acessibilidade no centro." width="200" />
       <h1>AcessWay</h1>
       <h3>Conectando pessoas, quebrando barreiras.</h3>
     </div>
@@ -16,101 +16,100 @@
           <label for="email">Email</label>
         </FloatLabel>
         <FloatLabel class="form-field">
-          <InputText id="password" type="password" v-model="form.password" required/>
+          <InputText id="password" type="password" v-model="form.password" required />
           <label for="password">Senha</label>
         </FloatLabel>
 
-        <!-- <button type="submit" class="login-btn">Entrar</button> -->
-        <Button type="submit" label="Entrar" :loading="store.loading" class="login-btn"/>
+        <Button type="submit" label="Entrar" class="login-btn" />
+
         <div v-if="store.loading" class="loader-overlay">
           <ProgressSpinner aria-label="Loading" />
         </div>
+
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
-
-
-        <!-- <label for="email">Email</label>
-        <input id="email" type="text" v-model="form.email" required placeholder="user@example.com" class="native-input"> -->
-
-
-        <!-- <label for="password">Senha</label>
-        <input id="password" type="password" v-model="form.password" required placeholder="••••••••••" class="native-input"/> -->
       </form>
       <Divider />
-      <!-- <hr /> -->
-      <!-- Criar nova conta -->
-      <!-- <button class="signup-btn" @click="Signup">Criar nova conta</button> -->
-      <Button label="Criar nova conta" severity="success" variant="outlined" @click="Signup" style="width: 100%" />
-
-      <!-- <div v-if="store.loading" class="loader-overlay">
-        <div class="loader"></div>
-      </div> -->
+      <Button label="Criar nova conta" severity="success" variant="outlined" @click="Signup" class="btn" />
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import  {useAuthStore} from '@/stores/loginStore'
-  import Image from 'primevue/image'
-  import InputText from 'primevue/inputtext'
-  import  FloatLabel  from 'primevue/floatlabel'
-  import Button from 'primevue/button'
-  import Divider from 'primevue/divider'
-  import  ProgressSpinner  from 'primevue/progressspinner'
-  const store = useAuthStore()
-  const router = useRouter()
-  
-  const form = ref({
-    email:'',
-    password:''
-  })
-  
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/loginStore'
+import Image from 'primevue/image'
+import InputText from 'primevue/inputtext'
+import FloatLabel from 'primevue/floatlabel'
+import Button from 'primevue/button'
+import Divider from 'primevue/divider'
+import ProgressSpinner from 'primevue/progressspinner'
+const store = useAuthStore()
+const router = useRouter()
 
-  async function login() {
-    
-    await store.login(form.value);
+const form = ref({
+  email: '',
+  password: ''
+})
 
-    router.push('/home')
 
-    form.value = {
-      email : '',
-      password : ''
-    }
-    
+async function login() {
+
+  await store.login(form.value);
+
+  router.push('/home')
+
+  form.value = {
+    email: '',
+    password: ''
   }
 
-  // Funções de navegação
+}
 
-  const Signup = () => {
-    router.push('/Signup')
-  }
+// Funções de navegação
+
+const Signup = () => {
+  router.push('/Signup')
+}
 </script>
 
 <style>
-  body{
-    background-color: #f0f2f5;
-  }
+body {
+  /* background-color: #f0f2f5; */
+  background-color: #18191a;
+}
 </style>
 <style scoped>
+.btn {
+  color: #81C784 !important;
+  width: 100% !important;
+
+}
+
 .form-field {
-  margin-bottom: 30px; 
+  margin-bottom: 30px;
   display: block;
 }
+
 .form-field :deep(.p-inputtext) {
   width: 100%;
 }
-.logo h1{ 
-  margin: 0;
-}
-.logo h3{
-  margin: 0;
-    margin-bottom: 20px;
-}
-.logo Image{
-  margin: 0;
 
+.logo h1 {
+  margin: 0;
+  color: #E4E6EB;
 }
+
+.logo h3 {
+  margin: 0;
+  margin-bottom: 20px;
+  color: #E4E6EB;
+}
+
+.logo Image {
+  margin: 0;
+}
+
 /* Container centralizado */
 .login-container {
   display: flex;
@@ -118,22 +117,25 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  /* background-color: #f0f2f5; */
+  background-color: #18191a;
 }
 
-/* Box branco */
 .login-box {
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: #242424;
   padding: 40px 30px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 360px;
   text-align: center;
+  border: 2px solid #333;
+  border-radius: 8px;
 }
 
 /* Inputs */
-.login-box .native-input{
+.login-box .native-input {
   width: 90%;
   padding: 12px 15px;
   margin-bottom: 12px;
@@ -175,7 +177,8 @@
   display: block;
   font-size: 13px;
   /* color: #1877f2; */
-  color: #0d47a1;
+  /* color: #0d47a1; */
+  color: #64B5F6;
   text-decoration: none;
   margin-bottom: 20px;
 }
@@ -212,9 +215,11 @@
   background-color: rgba(27, 94, 32, 0.1);
 }
 
-.signup-btn:focus{
-  outline: none; /* Remove o padrão do navegador */
-  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.4); /* Brilho sutil */
+.signup-btn:focus {
+  outline: none;
+  /* Remove o padrão do navegador */
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.4);
+  /* Brilho sutil */
 }
 
 /* Texto adicional */
@@ -223,15 +228,8 @@
   color: #606770;
   margin-top: 20px;
 }
-/* label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-  text-align: left;
-} */
-.loader-overlay{
+
+.loader-overlay {
   position: fixed;
   z-index: 9999;
   top: 0;
@@ -243,17 +241,4 @@
   justify-content: center;
   align-items: center;
 }
-/* .loader {
-  border: 16px solid #f3f3f3; 
-  border-top: 16px solid #3498db;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-} */
 </style>
