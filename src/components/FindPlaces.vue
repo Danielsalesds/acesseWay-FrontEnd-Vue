@@ -112,7 +112,6 @@ const goToDetails = (id) => {
 
 .container-splitter {
     flex-grow: 1;
-    /* Ocupa todo o espaço vertical disponível */
     width: 100%;
     border: none;
 }
@@ -198,8 +197,8 @@ img {
 
 @media (max-width: 767px) {
     .map-panel {
-        min-height: 400px;
-        height: 40vh;
+        min-height: 300px;
+        height: 30vh;
     }
 
     .list-panel {

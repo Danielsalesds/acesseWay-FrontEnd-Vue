@@ -1,19 +1,11 @@
 <template>
   <div class="layout-home">
     <!-- Passa função toggleMap para o Header -->
-    <TheHeader @show-map="showMap" @show-home="showFeed"  @toggle-map="setView('map')"/>
+    <TheHeader @show-map="showMap" @show-home="showFeed" @toggle-map="setView('map')"  @change-view="setView" :show-menu-button="isMobile"/>
     <main class="content">
-      <LeftSidebar  
-        @change-view="setView" 
-        :class="{ hide: currentView === 'RequestView' }"
-      />
-      
+      <LeftSidebar v-if="!isMobile" @change-view="setView" :class="{ hide: currentView === 'RequestView' }" />
       <!-- Mostra feed ou mapa -->
-      <component 
-        :is="currentView" 
-        ref="feedRef" 
-        :class="{ requestView: currentView === 'RequestView' }"
-      />
+      <component :is="currentView" ref="feedRef" :class="{ requestView: currentView === 'RequestView' }" />
 
       <!-- <RightSidebar /> -->
     </main>
@@ -29,7 +21,8 @@ import EstablishmentForm from '../components/EstablishmentForm.vue'
 import EstablishmentMap from '../components/EstablishmentMap.vue'
 import FindPlaces from '@/components/FindPlaces.vue'
 import RequestView from '../views/RequestView.vue'
-
+import Button from 'primevue/button'
+import Drawer from 'primevue/drawer'
 export default {
   components: {
     LeftSidebar,
@@ -39,14 +32,28 @@ export default {
     EstablishmentForm,
     EstablishmentMap,
     FindPlaces,
-    RequestView
+    RequestView,
+    Button,
+    Drawer
   },
   data() {
     return {
-      currentView: 'TheFeed' // inicia no feed
+      currentView: 'TheFeed',
+      visible: false,
+      isMobile: false,
     }
   },
+  mounted(){
+    this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkScreenSize);
+  },
   methods: {
+    checkScreenSize() {
+      this.isMobile = window.innerWidth < 768;
+    },
     showFeed() {
       if (this.currentView === 'TheFeed') {
         // já está no feed → apenas recarrega
@@ -66,35 +73,38 @@ export default {
         view === 'feed'
           ? 'TheFeed'
           : view === 'form'
-          ? 'EstablishmentForm'
-          : view === 'map'
-          ? 'EstablishmentMap'
-          : view === 'request'
-          ? 'RequestView'
-          : 'FindPlaces'
+            ? 'EstablishmentForm'
+            : view === 'map'
+              ? 'EstablishmentMap'
+              : view === 'request'
+                ? 'RequestView'
+                : 'FindPlaces'
     }
   }
-  
- 
 }
 </script>
 <style>
-  body{
-    background-color: #18191a;
-  }
+body {
+  background-color: #18191a;
+}
 </style>
 <style scoped>
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* evita que a página role */
+  overflow: hidden;
+  /* evita que a página role */
   width: 100%;
 }
+
 .hide {
   display: none !important;
 }
+
 .requestView {
-  grid-column: span 3; /* ocupa coluna do meio + direita */
+  grid-column: span 3;
+  /* ocupa coluna do meio + direita */
   width: 100%;
   padding: 20px;
   overflow-y: auto;
@@ -104,7 +114,8 @@ html, body {
   background-color: #18191a;
   color: #e4e6eb;
   height: 100vh;
-  overflow: hidden; /* evita scroll global */
+  overflow: hidden;
+  /* evita scroll global */
   display: flex;
   flex-direction: column;
 }
@@ -116,12 +127,14 @@ html, body {
   /* grid-template-columns: 300px 1fr 300px; */
   grid-template-columns: 300px 1fr;
   gap: 20px;
-  padding-top: 60px; /* altura do header fixo */
-  height: calc(100vh - 60px); /* altura restante */
+  /* padding-top: 60px; */
+  /* altura do header fixo */
+  /* height: calc(100vh - 60px); */
+  /* altura restante */
 }
 
 /* As 3 colunas com scroll próprio */
-.content > * {
+.content>* {
   overflow-y: auto;
   height: 100%;
   scrollbar-width: thin;
@@ -134,17 +147,17 @@ html, body {
     grid-template-columns: 80px 1fr;
   }
 }
+
 @media (max-width: 768px) {
   .content {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
+    margin: 5px;
   }
 }
+
 /* @media (max-width: 800px) {
   .content {
     grid-template-columns: 1fr;
   }
 } */
 </style>
-
-
-

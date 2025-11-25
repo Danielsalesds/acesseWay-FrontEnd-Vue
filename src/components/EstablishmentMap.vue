@@ -3,7 +3,7 @@
 
   <!-- </div> -->
   <div ref="mapEl" class="map"></div>
-  <Dialog v-model:visible="dialogVisible" modal :style="{ width: '25rem' }">
+  <Dialog v-model:visible="dialogVisible" modal>
 
     <div class="main-info">
       <img v-if="selected.imageUrl != ''" :src="selected.imageUrl" alt="" width="30%">

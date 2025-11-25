@@ -116,7 +116,7 @@ const publishPost = async () => {
   }
 
   // Se quiser futuramente enviar imagem, você pode usar FormData aqui
-  await postStores.createPost(user.id, newPost)
+  await postStores.createPost(user.id, newPost, selectedFile.value)
 
   // Limpa tudo após publicar
   postText.value = ""

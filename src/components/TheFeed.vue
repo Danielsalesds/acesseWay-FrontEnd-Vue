@@ -204,7 +204,7 @@ defineExpose({ reloadPosts, scrollToTop })
 /* Responsividade */
 @media (max-width: 768px) {
   .feed > * {
-    max-width: 95%;
+    max-width: 100%;
   }
 }
 </style>

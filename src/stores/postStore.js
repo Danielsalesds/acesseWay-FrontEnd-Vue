@@ -13,9 +13,10 @@ export const usePostStore = defineStore('post', {
   actions: {
 
     //  Criar post
-    async createPost(userId, newPost) {
+    async createPost(userId, newPost, imageFile) {
       this.loading = true
       this.error = null
+      let finalImageUrl = null;
 
       const profileStore = userProfileStore()
       //Verificar se user esta carregado se não carrega-lo no store
@@ -26,7 +27,28 @@ export const usePostStore = defineStore('post', {
       }
       try {
         //adicionar ID do autor do post
-        const postWithAuthor = { ...newPost, autorId: userId}
+        if (imageFile) {
+          let formData = new FormData()
+          formData.append("file", imageFile)
+          let response = await fetch("https://acessway.onrender.com/api/upload", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${profileStore.token}`,
+            },
+            body: formData
+          });
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro no upload: ${response.status} - ${errorText}`);
+          }
+
+          // 4. Pega o resultado
+          let cloudinaryUrl = await response.json();
+          finalImageUrl= cloudinaryUrl.url;
+        }
+
+
+        const postWithAuthor = { ...newPost, autorId: userId, imagemUrl: finalImageUrl }
         const { data } = await api.post('https://acessway.onrender.com/api/posts', postWithAuthor)
 
         //  Atualizar cache de autores
@@ -38,9 +60,10 @@ export const usePostStore = defineStore('post', {
         }
 
         //  Adicionar o post já enriquecido com o nome
-        const enrichedPost = { ...data, 
+        const enrichedPost = {
+          ...data,
           autorNome: this.authorsCache[userId].nome,
-          autorFoto: this.authorsCache[userId].fotoUrl 
+          autorFoto: this.authorsCache[userId].fotoUrl
         }
         this.posts.push(enrichedPost)
         this.posts.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
@@ -154,7 +177,7 @@ export const usePostStore = defineStore('post', {
             )
 
             // Retorna o post enriquecido
-            
+
             return {
               ...post,
               autorNome: autorInfo.nome,
@@ -218,7 +241,7 @@ export const usePostStore = defineStore('post', {
                 this.authorsCache[post.autorId] = autorInfo
               } catch (err) {
                 console.warn(`Erro ao buscar autor ${post.autorId}`, err)
-                 autorInfo = {
+                autorInfo = {
                   nome: 'Usuário desconhecido',
                   fotoUrl: 'https://via.placeholder.com/40'
                 }
@@ -235,98 +258,98 @@ export const usePostStore = defineStore('post', {
           })
         )
 
-          // 3️ Atualiza os posts já enriquecidos
-          this.posts = enrichedPosts
-            } catch (err) {
-              this.error = err.response?.data?.message || 'Erro ao carregar posts'
-              console.error('Erro ao carregar posts:', err)
-            } finally {
-              this.loading = false
-            }
-       },
-      // Adicionar comentário a um post
-      async comentarPost(postId, texto) {
-        this.loading = true
-        this.error = null
+        // 3️ Atualiza os posts já enriquecidos
+        this.posts = enrichedPosts
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Erro ao carregar posts'
+        console.error('Erro ao carregar posts:', err)
+      } finally {
+        this.loading = false
+      }
+    },
+    // Adicionar comentário a um post
+    async comentarPost(postId, texto) {
+      this.loading = true
+      this.error = null
 
-        const profileStore = userProfileStore()
+      const profileStore = userProfileStore()
 
-        // Garantir que o usuário está logado e carregado
-        if (!profileStore.user) {
-          await profileStore.getUserProfile()
-          if (!profileStore.userId) {
-            console.error("Usuário não logado!")
-            this.loading = false
-            return
-          }
-        }
-
-        try {
-          // Montar o payload completo
-          const payload = {
-            usuarioId: profileStore.userId,
-            texto,
-            data: new Date().toISOString()
-          }
-
-          // Fazer a requisição
-          const { data } = await api.post(
-            `https://acessway.onrender.com/api/posts/${postId}/comentar`,
-            payload
-          )
-
-          // Montar info do autor logado
-          const autorInfo = {
-            nome:
-              `${profileStore.user.firstName || ''} ${profileStore.user.lastName || ''}`.trim() ||
-              'Usuário sem nome',
-            fotoUrl:
-              profileStore.user.imageUrl ||
-              profileStore.user.fotoUrl ||
-              'https://via.placeholder.com/40'
-          }
-
-          // Atualiza o cache de autores de comentários
-          if (!this.authorsCacheComment) {
-            this.authorsCacheComment = {}
-          }
-          this.authorsCacheComment[profileStore.userId] = autorInfo
-
-          // Cria o comentário enriquecido
-          // Cria o comentário enriquecido
-          const enrichedComment = {
-            ...data,
-            texto, // garante que o texto do comentário esteja presente
-            autorNome: autorInfo.nome,
-            autorFoto: autorInfo.fotoUrl,
-            data: data.data || new Date().toISOString()
-          }
-
-          // Atualiza localmente o post sem recarregar tudo
-          const postIndex = this.posts.findIndex((p) => p.id === postId)
-          if (postIndex !== -1) {
-            const post = this.posts[postIndex]
-            //const novosComentarios = [...(post.comentario || []), enrichedComment]
-            const novosComentarios = [...(post.comentario || []), enrichedComment]
-              .sort((a, b) => new Date(a.data) - new Date(b.data))
-
-
-            // Força reatividade substituindo o objeto
-            this.posts[postIndex] = { ...post, comentario: novosComentarios }
-          }
-
-          console.log('Comentário adicionado:', enrichedComment)
-          return enrichedComment // <- retorna para uso futuro (opcional)
-
-        } catch (err) {
-          this.error = err.response?.data?.message || 'Erro ao adicionar comentário'
-          console.error('Erro ao comentar:', err)
-        } finally {
+      // Garantir que o usuário está logado e carregado
+      if (!profileStore.user) {
+        await profileStore.getUserProfile()
+        if (!profileStore.userId) {
+          console.error("Usuário não logado!")
           this.loading = false
+          return
         }
-      },
+      }
 
-   //lista de posts
+      try {
+        // Montar o payload completo
+        const payload = {
+          usuarioId: profileStore.userId,
+          texto,
+          data: new Date().toISOString()
+        }
+
+        // Fazer a requisição
+        const { data } = await api.post(
+          `https://acessway.onrender.com/api/posts/${postId}/comentar`,
+          payload
+        )
+
+        // Montar info do autor logado
+        const autorInfo = {
+          nome:
+            `${profileStore.user.firstName || ''} ${profileStore.user.lastName || ''}`.trim() ||
+            'Usuário sem nome',
+          fotoUrl:
+            profileStore.user.imageUrl ||
+            profileStore.user.fotoUrl ||
+            'https://via.placeholder.com/40'
+        }
+
+        // Atualiza o cache de autores de comentários
+        if (!this.authorsCacheComment) {
+          this.authorsCacheComment = {}
+        }
+        this.authorsCacheComment[profileStore.userId] = autorInfo
+
+        // Cria o comentário enriquecido
+        // Cria o comentário enriquecido
+        const enrichedComment = {
+          ...data,
+          texto, // garante que o texto do comentário esteja presente
+          autorNome: autorInfo.nome,
+          autorFoto: autorInfo.fotoUrl,
+          data: data.data || new Date().toISOString()
+        }
+
+        // Atualiza localmente o post sem recarregar tudo
+        const postIndex = this.posts.findIndex((p) => p.id === postId)
+        if (postIndex !== -1) {
+          const post = this.posts[postIndex]
+          //const novosComentarios = [...(post.comentario || []), enrichedComment]
+          const novosComentarios = [...(post.comentario || []), enrichedComment]
+            .sort((a, b) => new Date(a.data) - new Date(b.data))
+
+
+          // Força reatividade substituindo o objeto
+          this.posts[postIndex] = { ...post, comentario: novosComentarios }
+        }
+
+        console.log('Comentário adicionado:', enrichedComment)
+        return enrichedComment // <- retorna para uso futuro (opcional)
+
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Erro ao adicionar comentário'
+        console.error('Erro ao comentar:', err)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    //lista de posts
     async getAllPosts() {
       this.loading = true
       this.error = null
@@ -338,9 +361,9 @@ export const usePostStore = defineStore('post', {
         return
       }
       try {
-      const { data } = await api.get('https://acessway.onrender.com/api/posts')
-      this.posts = data
-      console.log('post:  ', data)
+        const { data } = await api.get('https://acessway.onrender.com/api/posts')
+        this.posts = data
+        console.log('post:  ', data)
       } catch (err) {
         this.error = err.response?.data?.message || 'Erro ao cadastrar Post'
         console.error(err)
@@ -434,5 +457,5 @@ export const usePostStore = defineStore('post', {
       }
     }
   }
-  
+
 })
