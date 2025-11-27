@@ -21,7 +21,15 @@ export const useStore = defineStore('profile', {
       this.error = null
       
       try {
-        const { data } = await api.post('https://acessway.onrender.com/auth', newUser,{ withCredentials: true })
+        //const { data } = await api.post('https://acessway.onrender.com/auth', newUser,{ withCredentials: true })
+        const data = await fetch('https://acessway.onrender.com/auth', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include', // equivalente ao withCredentials: true
+          body: JSON.stringify(newUser)
+        })
         this.user = data || null
         console.log('Usuário cadastrado:', data)
 
