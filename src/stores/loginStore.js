@@ -54,12 +54,12 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) throw new Error('Sem token, faça login primeiro.')
 
       const res = await fetch(`https://acessway.onrender.com/user/${userId}`, {
-    method: "GET",
-    headers: {
-      'Authorization': `Bearer ${this.token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       const data = await res.json()
       this.user = data
       console.log('User restaurado:>>>', this.user)

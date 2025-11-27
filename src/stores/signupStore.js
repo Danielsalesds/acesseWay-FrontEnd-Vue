@@ -40,7 +40,7 @@ export const useStore = defineStore('profile', {
         this.loading = false
       }
     },
-    // 🔹 Atualizar usuário pelo ID
+    //  Atualizar usuário pelo ID
     async updateProfile(userId, updatedData) {
       const authStore = useAuthStore() //  acessa token do outro store
       //carregar useAuthStore 
@@ -80,11 +80,14 @@ export const useStore = defineStore('profile', {
 
 
         //  Envia o token no header Authorization
-        const { data } = await api.put(`/user/${userId}`, updatedData, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+        const data = await fetch(`https://acessway.onrender.com/user/${userId}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify(updatedData)
+});
 
         // Atualiza o estado local (opcional)
         if (this.user && this.user.id === userId) {
