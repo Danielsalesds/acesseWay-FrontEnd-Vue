@@ -7,9 +7,6 @@
       <form @submit.prevent="handleSubmit" aria-label="Formulário de criação de conta">
         <!-- Nome e Sobrenome -->
         <div class="name-fields">
-          <!-- <input type="text" placeholder="Nome" v-model="form.firstName" required />
-          <input type="text" placeholder="Sobrenome" v-model="form.lastName" required /> -->
-
           <FloatLabel class="form-field">
             <InputText id="firstName" v-model="form.firstName" required aria-required="true" />
             <label for="firstName">Nome</label>
@@ -38,61 +35,27 @@
             </select>
           </div>
         </div>
+        <!-- <div class="form-group">
+           <label for="birthDate" class="label-title">Data de nascimento</label>
+           <InputMask 
+              id="birthDate" 
+              v-model="form.birthDate" 
+              mask="99/99/9999" 
+              placeholder="dd/mm/aaaa" 
+              class="w-full" 
+              required
+           />
+        </div> -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px;">
           <span>Gênero</span>
           <SelectButton v-model="form.gender" :options="genderOptions" optionLabel="label" optionValue="value" />
         </div>
-        <!-- Gênero -->
-        <!-- <fieldset class="gender">
-          <legend>Gênero</legend>
-          <div class="options-box">
-            <SelectButton :options="genderOptions" optionLabel="label" optionValue="value"/> -->
-        <!-- <label class="radio-box" for="gender-female">
-              Feminino
-              <input id="gender-female" type="radio" value="FEMALE" v-model="form.gender" />
-            </label>
-            <label class="radio-box" for="gender-male">
-              Masculino
-              <input id="gender-male" type="radio" value="MALE" v-model="form.gender" />
-            </label>
-            <label class="radio-box" for="gender-other">
-              Outro
-              <input id="gender-other" type="radio" value="OTHER" v-model="form.gender" />
-            </label> -->
-        <!-- </div>
-        </fieldset> -->
+
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px;">
           <span>Tipo da conta</span>
           <SelectButton v-model="form.role" :options="roleOptions" optionLabel="label" optionValue="value"
             class="custom-select" />
         </div>
-        <!-- Tipo de conta -->
-        <!-- <fieldset class="account-type">
-          <legend>Tipo de conta</legend>
-          <div class="options-box">
-            <SelectButton :options="roleOptions" optionLabel="label" optionValue="value"/> -->
-        <!-- <label class="radio-box" for="role-normal">
-              Usuário Comum
-              <input id="role-normal" type="radio" value="NORMAL" v-model="form.role" />
-            </label>
-            <label class="radio-box" for="role-pro">
-              Profissional
-              <input id="role-pro" type="radio" value="PROFESSIONAL" v-model="form.role" />
-            </label>
-            <label class="radio-box" for="role-adm">
-              Empresa
-              <input id="role-adm" type="radio" value="COMPANY" v-model="form.role" />
-            </label> -->
-        <!-- </div>
-        </fieldset> -->
-
-        <!-- Contato e senha -->
-        <!-- <label for="email" class="sr-only">Email</label>
-        <input id="email" type="email" placeholder="Email" v-model="form.email" required aria-required="true" />
-
-        <label for="password" class="sr-only">Senha</label>
-        <input id="password" type="password" placeholder="Senha" v-model="form.password" required
-          aria-required="true" /> -->
 
         <FloatLabel class="form-field" style="margin-top: 30px; margin-bottom: 30px;">
           <InputText id="email" v-model="form.email" required aria-required="true" />
@@ -121,6 +84,7 @@ import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import SelectButton from 'primevue/selectbutton';
 import ProgressSpinner from 'primevue/progressspinner'
+// import InputMask from 'primevue/inputmask';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -186,6 +150,8 @@ async function handleSubmit() {
 
 <style scoped>
 /* Texto oculto apenas para leitores de tela */
+.w-full { width: 100%; }
+.mt-4 { margin-top: 1.5rem; }
 .sr-only {
   position: absolute;
   left: -9999px;
@@ -211,7 +177,7 @@ async function handleSubmit() {
   background-color: #18191a;
   /* background: #eef1f5; */
   min-height: 100vh;
-  padding: 30px;
+  padding: 20px;
 }
 
 .signup-box {
@@ -223,7 +189,8 @@ async function handleSubmit() {
   padding: 40px 45px;
   border-radius: 16px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
-  width: 500px;
+  width: 100%; 
+  max-width: 500px;
   transition: all .2s ease;
 }
 
@@ -342,20 +309,6 @@ span {
   font-weight: 600;
 }
 
-/* .signup-btn {
-  width: 100%;
-  background: #42b72a;
-  color: white;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  margin-top: 25px;
-  cursor: pointer;
-  transition: all .2s ease;
-  letter-spacing: 0.3px;
-} */
 .signup-btn {
   width: 100%;
   color: white;
@@ -371,10 +324,6 @@ span {
   transition: background-color 0.2s;
 }
 
-/* .signup-btn:hover {
-  background: #36a420;
-  transform: translateY(-1px);
-} */
 
 .signup-btn:active {
   transform: scale(0.97);
@@ -407,5 +356,14 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+@media (max-width: 480px) {
+    .signup-box {
+        padding: 20px;
+    }
+    
+    .name-fields {
+        flex-direction: column;
+    }
 }
 </style>

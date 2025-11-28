@@ -5,32 +5,20 @@
 
     <!-- Posts -->
     <!-- Só renderiza os posts se não estiver carregando -->
-    <div v-if= "posts">
-    <ThePost
-      v-for="post in posts || []"
-      :key="post.id"
-      :post="post"
-      :user="user"
-      @like="handleLike(post.id)"
-      @open-comments="openComments"
-      @delete="deletePost"
-      @report="reportPost"
-    />
-  </div>
+    <div v-if="posts">
+      <ThePost v-for="post in posts || []" :key="post.id" :post="post" :user="user" @like="handleLike(post.id)"
+        @open-comments="openComments" @delete="deletePost" @report="reportPost" />
+    </div>
 
-  <div v-else class="text-center text-gray-400 p-4">
-    Carregando posts...
-  </div>
+    <div v-else class="text-center text-gray-400 p-4">
+      Carregando posts...
+    </div>
 
     <p v-if="!loading && posts.length === 0" class="empty">Nenhum post ainda 😢</p>
 
   </section>
   <!-- Modal -->
-    <TheCommentModal
-      v-if="selectedPost"
-      :post="selectedPost"
-      @close="closeComments"
-    />
+  <TheCommentModal v-if="selectedPost" :post="selectedPost" @close="closeComments" />
 </template>
 
 <script setup>
@@ -44,7 +32,6 @@ import { usePostStore as userPost } from '@/stores/postStore'
 //import { useAuthStore } from '@/stores/loginStore'
 import ThePost from '@/components/ThePost.vue'
 import { useAuthStore } from '@/stores/loginStore'
-
 const store = useAuthStore()
 const user = store.user
 
@@ -64,7 +51,7 @@ async function reloadPosts() {
 // Lista de posts reativa
 //const posts = userPosts.posts
 onMounted(async () => {
-   if (posts.value.length === 0) {
+  if (posts.value.length === 0) {
     await userPosts.postGetAllCp()
   }
 
@@ -89,11 +76,11 @@ async function scrollToTop() {
 //deletar e reportar post
 async function deletePost(id) {
   await userPosts.deletePost(id)
-    alert("post excluido!")
+  alert("post excluido!")
 }
 
 async function reportPost({ postId, reason }) {
-  alert("Denúncia enviada:"+ postId+ " denucia: " +reason)
+  alert("Denúncia enviada:" + postId + " denucia: " + reason)
 }
 
 
@@ -108,13 +95,19 @@ defineExpose({ reloadPosts, scrollToTop })
   flex-direction: column;
   gap: 16px;
   overflow-y: auto;
-  height: calc(100vh - 60px);
+  /* height: calc(100vh - 60px); */
+  height: 100%;
+  margin-top: 10px;
+  /* distância do header */
+  margin: 0;
+  padding-top: 20px;
+  margin-bottom: 100px;
+  overflow-y: auto;
 
-  margin-top: 10px; /* distância do header */
-  padding-top: 10px;
-  margin-bottom: 50px;
-
-  background-color: #18191a; /* só pra deixar o fundo consistente */
+  background-color: #18191a;
+  /* só pra deixar o fundo consistente */
+  scrollbar-width: thin;
+  scrollbar-color: #3a3b3c #18191a;
 }
 
 /* Define um tamanho padrão e centralizado para todos os cards */
@@ -125,8 +118,9 @@ defineExpose({ reloadPosts, scrollToTop })
 }
 
 /* Espaçamento entre o criador e os posts */
-.feed > * + * {
-  margin-top: 20px; /* distância entre os cards */
+.feed>*+* {
+  margin-top: 20px;
+  /* distância entre os cards */
 }
 
 /* Aparência dos cards de post */
@@ -134,7 +128,7 @@ defineExpose({ reloadPosts, scrollToTop })
   background-color: #242526;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilo especial pro criador (opcional) */
@@ -142,7 +136,7 @@ defineExpose({ reloadPosts, scrollToTop })
   background-color: #242526;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .likes {
@@ -188,6 +182,7 @@ defineExpose({ reloadPosts, scrollToTop })
   border-radius: 10px;
   margin-bottom: 20px;
 }
+
 .new-post-textarea {
   width: 100%;
   height: 80px;
@@ -203,7 +198,7 @@ defineExpose({ reloadPosts, scrollToTop })
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .feed > * {
+  .feed>* {
     max-width: 100%;
   }
 }

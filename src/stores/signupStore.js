@@ -8,7 +8,7 @@ import axios from 'axios'
 export const useStore = defineStore('profile', {
   state: () => ({
     user: null,     // guarda o usuário criado (opcional)
-    users:[],
+    users: [],
     loading: false,
     error: null,
     searchedName: "",
@@ -19,9 +19,9 @@ export const useStore = defineStore('profile', {
     async createProfile(newUser) {
       this.loading = true
       this.error = null
-      
+
       try {
-        const { data } = await api.post('https://acessway.onrender.com/auth', newUser,{ withCredentials: true })
+        const { data } = await api.post('https://acessway.onrender.com/auth', newUser, { withCredentials: true })
         this.user = data || null
         console.log('Usuário cadastrado:', data)
 
@@ -41,7 +41,7 @@ export const useStore = defineStore('profile', {
       }
       const token = authStore.token     // pega o token persistido
       this.user = authStore.user
-      console.log("User antes: ", this.user )
+      console.log("User antes: ", this.user)
 
       if (!userId) {
         console.error("ID do usuário não fornecido")
@@ -55,20 +55,23 @@ export const useStore = defineStore('profile', {
 
       this.loading = true
       this.error = null
-      
+
       try {
         console.log(">>>> ID do usuário =", userId)
 
         // Faz o Upload da imagem para o Cloudinary e atribui a url para o usuário que vai ser atualizado.
-        let formData =  new FormData()
-        formData.append("file",updatedData.imageUrl)
-        let response = await axios.post("https://acessway.onrender.com/api/upload", formData,{
-          headers: {
+        if (updatedData.imageUrl instanceof File) {
+          let formData = new FormData()
+          formData.append("file", updatedData.imageUrl)
+          let response = await axios.post("https://acessway.onrender.com/api/upload", formData, {
+            headers: {
               Authorization: `Bearer ${token}`,
-          }
-        });
-        let cloudinaryUrl = response.data
-        updatedData.imageUrl = cloudinaryUrl.url
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          let cloudinaryUrl = response.data
+          updatedData.imageUrl = cloudinaryUrl.url
+        }
 
 
         //  Envia o token no header Authorization
@@ -82,11 +85,11 @@ export const useStore = defineStore('profile', {
         if (this.user && this.user.id === userId) {
           this.user = { ...this.user, ...data }
         }
-        console.log("User Depois: ", this.user )
+        console.log("User Depois: ", this.user)
         authStore.user = { ...authStore.user, ...data }
 
         console.log("Usuário atualizado com sucesso:", "Só DATA: ", data)
-        
+
         return data
 
       } catch (err) {
@@ -101,37 +104,38 @@ export const useStore = defineStore('profile', {
 
     // 🔹 Buscar usuário por ID
     async getUserById(userId) {
-        if (!userId) return null
-        // busca lista atualizada
+      if (!userId) return null
+      // busca lista atualizada
 
-        this.loading = true
-        this.error = null
-        try {
-            // Busca no backend
-            const { data } = await api.get(`/user/${userId}`)
-            
-            // Atualiza o estado local, se quiser
-            this.user = data || null
+      this.loading = true
+      this.error = null
+      try {
+        // Busca no backend
+        const { data } = await api.get(`/user/${userId}`)
 
-            console.log('Usuário encontrado por ID:', this.user)
-            return this.user
-        } catch (err) {
-            this.error = err.response?.data?.message || 'Erro ao buscar usuário'
-            console.error(err)
-            return null
-        } finally {
-            this.loading = false
-        }
+        // Atualiza o estado local, se quiser
+        this.user = data || null
+
+        console.log('Usuário encontrado por ID:', this.user)
+        return this.user
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Erro ao buscar usuário'
+        console.error(err)
+        return null
+      } finally {
+        this.loading = false
+      }
     },
 
-      // 🔹 Buscar todos os perfis
+    // 🔹 Buscar todos os perfis
     async getAllProfiles() {
       const name = this.searchedName
       this.loading = true
       this.error = null
       try {
-        const { data } = await api.get(`/user?name=${name}`)
-        console.log( 'Searched: '+ this.searchedName)
+        // const { data } = await api.get(`/user?name=${name}`)
+        const { data } = await axios.get(`https://acessway.onrender.com/user?name=${name}`)
+        console.log('Searched: ' + this.searchedName)
         this.users = data.content || []
         console.log('Perfis encontrados-->>', this.users)
       } catch (err) {
@@ -141,26 +145,26 @@ export const useStore = defineStore('profile', {
         this.loading = false
       }
     },
-    
+
     //logar com usuario
     async logar(userLoad) {
-        // validação de entrada
-        if (!userLoad || !userLoad.email) {
-            console.error("Dados de login inválidos:", userLoad);
-            return;
-        }
+      // validação de entrada
+      if (!userLoad || !userLoad.email) {
+        console.error("Dados de login inválidos:", userLoad);
+        return;
+      }
 
-        // busca segura (evita undefined)
-        const foundUser = this.users.find(
-            p => p.email && p.email.toLowerCase() === userLoad.email.toLowerCase()
-        );
+      // busca segura (evita undefined)
+      const foundUser = this.users.find(
+        p => p.email && p.email.toLowerCase() === userLoad.email.toLowerCase()
+      );
 
-        if (foundUser) {
-            this.user = foundUser;
-            console.log("✅ Usuário encontrado:", foundUser);
-        } else {
-            console.log("❌ Usuário não encontrado");
-        }
+      if (foundUser) {
+        this.user = foundUser;
+        console.log("✅ Usuário encontrado:", foundUser);
+      } else {
+        console.log("❌ Usuário não encontrado");
+      }
     },
 
 

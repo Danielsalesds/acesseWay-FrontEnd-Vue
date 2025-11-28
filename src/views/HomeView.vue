@@ -127,6 +127,8 @@ body {
   /* grid-template-columns: 300px 1fr 300px; */
   grid-template-columns: 300px 1fr;
   gap: 20px;
+  height: 100%;
+  overflow: hidden;
   /* padding-top: 60px; */
   /* altura do header fixo */
   /* height: calc(100vh - 60px); */
@@ -137,8 +139,10 @@ body {
 .content>* {
   overflow-y: auto;
   height: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: #3a3b3c #18191a;
+  min-width: 0;
+  min-height: 0;
+  /* scrollbar-width: thin;
+  scrollbar-color: #3a3b3c #18191a; */
 }
 
 /* Responsividade */

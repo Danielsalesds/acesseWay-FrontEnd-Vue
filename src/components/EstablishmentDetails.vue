@@ -1,9 +1,9 @@
 <template>
-    <TheHeader />
+    <!-- <TheHeader /> -->
     <div v-if="establishment" class="main">
         <img v-if="establishment.imageUrl != ''" :src="establishment.imageUrl" alt="Imagem do estabelecimento"
             class="banner-imagem">
-        <img v-else src="https://placehold.net/default.png" alt="Estabelecimento sem imagem definida">
+        <img v-else src="https://placehold.net/default.png" alt="Estabelecimento sem imagem definida" class="banner-imagem"> 
         <div class="header-hero">
             <h1>{{ establishment.name }}</h1>
             <div class="info-review">
@@ -136,7 +136,6 @@
 </template>
 
 <script setup>
-import TheHeader from '@/components/TheHeader.vue'
 import { useEstablishmentStore } from '@/stores/establishmentStore';
 import { useAuthStore } from '@/stores/loginStore';
 import { defineProps, onMounted, ref} from 'vue'

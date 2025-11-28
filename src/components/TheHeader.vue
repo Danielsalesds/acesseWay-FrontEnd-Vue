@@ -67,7 +67,7 @@
           </InputIcon>
           <InputText placeholder="Buscar" v-model="store.searchedName" @focus="toggle" @keydown.enter="search" />
         </IconField>
-        <Popover ref="op" style="background-color: #3a3b3c;">
+        <!-- <Popover ref="op" style="background-color: #3a3b3c;">
           <div class="list-container">
 
             <div v-if="store.loading" class="p-3 text-center">
@@ -87,11 +87,35 @@
                     @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + slotProps.option.firstName" />
                   <div class="flex flex-column">
                     <span class="font-bold">{{ slotProps.option.firstName }} {{ slotProps.option.lastName }}</span>
-                    <!-- <span class="text-sm text-gray-500">Usuário</span> -->
                   </div>
                 </div>
               </template>
-            </Listbox>
+</Listbox>
+</div>
+</Popover> -->
+        <Popover ref="op" class="search-popover">
+          <div class="search-results-container">
+
+            <div v-if="store.loading" class="state-message">
+              <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem"></i>
+            </div>
+
+            <div v-else-if="store.users.length === 0" class="state-message text-gray-400">
+              Nenhum usuário encontrado.
+            </div>
+
+            <ul v-else class="result-list">
+              <li v-for="user in store.users" :key="user.id" class="result-item" @click="goToProfile(user.id)">
+                <img :src="user.imageUrl" class="user-avatar"
+                  @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + user.firstName" />
+
+                <div class="user-info">
+                  <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+                  <span class="user-subtitle">Ver perfil</span>
+                </div>
+              </li>
+            </ul>
+
           </div>
         </Popover>
         <!-- <ListUsers v-show="isDropdownVisible & !showMenuButton" :users="store.users" @close="closeDropdown" /> -->
@@ -115,7 +139,7 @@
       </InputIcon>
       <InputText placeholder="Buscar" v-model="store.searchedName" @focus="toggle" @keydown.enter="search" />
     </IconField>
-    <Popover ref="op" style="background-color: #3a3b3c;">
+    <!-- <Popover ref="op" style="background-color: #3a3b3c;">
       <div class="list-container">
 
         <div v-if="store.loading" class="p-3 text-center">
@@ -134,11 +158,35 @@
                 @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + slotProps.option.firstName" />
               <div class="flex flex-column">
                 <span class="font-bold">{{ slotProps.option.firstName }} {{ slotProps.option.lastName }}</span>
-                <!-- <span class="text-sm text-gray-500">Usuário</span> -->
               </div>
             </div>
           </template>
         </Listbox>
+      </div>
+    </Popover> -->
+    <Popover ref="op" class="search-popover">
+      <div class="search-results-container">
+
+        <div v-if="store.loading" class="state-message">
+          <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem"></i>
+        </div>
+
+        <div v-else-if="store.users.length === 0" class="state-message text-gray-400">
+          Nenhum usuário encontrado.
+        </div>
+
+        <ul v-else class="result-list">
+          <li v-for="user in store.users" :key="user.id" class="result-item" @click="goToProfile(user.id)">
+            <img :src="user.imageUrl" class="user-avatar"
+              @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + user.firstName" />
+
+            <div class="user-info">
+              <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+              <span class="user-subtitle">Ver perfil</span>
+            </div>
+          </li>
+        </ul>
+
       </div>
     </Popover>
     <!-- <ListUsers v-show="isDropdownVisible" :users="store.users" @close="closeDropdown" /> -->
@@ -182,7 +230,10 @@ import IconField from 'primevue/iconfield';
 import InputText from 'primevue/inputtext'
 import InputIcon from 'primevue/inputicon';
 import Popover from 'primevue/popover';
-import Listbox from 'primevue/listbox';
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
 const store = useStore()
 
 // const isDropdownVisible = ref(false);
@@ -214,10 +265,98 @@ const op = ref();
 const toggle = (event) => {
   op.value.toggle(event);
 }
+const goToProfile = (userId) => {
+    op.value.hide();
+    router.push({ name: 'UserProfile', params: { id: userId } });
+};
 </script>
 
 <style scoped>
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+:deep(.p-popover) {
+  background: #242424;
+  /* Fundo do menu */
+  border: 1px solid #3E4042;
+  padding: 0;
+  /* Remove padding padrão do componente */
+  border-radius: 8px;
+  overflow: hidden;
+  /* Garante que os itens não vazem as bordas arredondadas */
+}
+
+:deep(.p-popover-content) {
+  padding: 0 !important;
+  /* Remove padding interno do PrimeVue */
+}
+
+.search-results-container {
+  width: 300px;
+  /* Largura fixa ou min-width */
+}
+
+.state-message {
+  padding: 20px;
+  text-align: center;
+  color: #b0b3b8;
+}
+
+/* A Lista */
+.result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  /* Scroll se tiver muitos usuários */
+}
+
+/* O Item Individual */
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #2f3031;
+  /* Divisor sutil */
+}
+
+/* Remove a borda do último item */
+.result-item:last-child {
+  border-bottom: none;
+}
+
+/* Efeito Hover (Parecido com Facebook/Instagram) */
+.result-item:hover {
+  background-color: #3a3b3c;
+  /* Um pouco mais claro que o fundo */
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Textos */
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  color: #e4e6eb;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.user-subtitle {
+  color: #b0b3b8;
+  font-size: 0.8rem;
+}
 
 .list-container {
   display: flex;
