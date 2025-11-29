@@ -1,98 +1,20 @@
 <template>
-  <!-- <header class="header"> -->
-  <!-- <Button v-if="showMenuButton" icon="pi pi-bars" @click="visible = true" />
-    <Drawer v-model:visible="visible">
-      <ul>
-        <li @click="$emit('change-view', 'feed')">
-          <i class="fas fa-home"></i> Feed
-        </li>
-        <div v-if="role === 'company'">
-          <li @click="$emit('change-view', 'form')">
-            <i class="fas fa-plus-square"></i> Novo Estabelecimento
-          </li>
-        </div>
-
-        <li @click="$emit('change-view', 'map')">
-          <i class="fas fa-map-marked-alt"></i> Mapa
-        </li>
-        <li @click="$emit('change-view', 'establishment-list')">
-          <i class="fa-solid fa-location-dot"></i>
-          Encontrar Locais
-        </li>
-        <div v-if="role === 'admin'">
-          <li @click="$emit('change-view', 'request')">
-            <i class="fa-solid fa-list-check"></i>
-            Solicitações Pendentes
-          </li>
-        </div>
-      </ul>
-    </Drawer>
-    <div class="header-left">
-      <div class="logo">AccessWay</div>
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Pesquisar na Way Plus" v-model="store.searchedName" @focus="openDropdown"
-          @keydown.enter="search" />
-      </div>
-      <ListUsers v-show="isDropdownVisible" :users="store.users" @close="closeDropdown" />
-    </div>
-
-    <nav class="header-center">
-      <button class="nav-btn" @click="$emit('show-home')">
-        <i class="fas fa-home"></i>
-      </button>
-    </nav>
-
-    <div class="header-right">
-
-      <button class="icon-btn"><i class="fas fa-bell"></i></button>
-      <button class="icon-btn"><i class="fas fa-comment-dots"></i></button>
-      <UserMenu />
-      <div>
-      </div>
-    </div> -->
-  <!-- </header> -->
   <Toolbar style="background-color: #242526; border: none; border-bottom: 2px solid #333;">
     <template #start>
       <div style="display: flex; align-items: center; gap: 16px;">
-        <Button v-if="showMenuButton" icon="pi pi-bars" @click="visible = true" text severity="secondary" />
-        <div class="logo-container" @click="$emit('show-home')">
-          <img v-if="!showMenuButton" src="/Icon.png" alt="Logo AccessWay" height="30" />
+        <Button v-if="isMobile" icon="pi pi-bars" @click="visible = true" text severity="secondary" />
+        <div class="logo-container" @click="goToHome">
+          <img v-if="!isMobile" src="/Icon.png" alt="Logo AccessWay" height="30" />
           <span class="logo-text">AccessWay</span>
           <!-- <Button icon="pi pi-home" aria-label="Home" variant="text" style="color: white;"/> -->
         </div>
-        <IconField v-if="!showMenuButton">
+        <IconField v-if="!isMobile & showSearch">
           <InputIcon>
             <i class="pi pi-search" />
           </InputIcon>
           <InputText placeholder="Buscar" v-model="store.searchedName" @focus="toggle" @keydown.enter="search" />
         </IconField>
-        <!-- <Popover ref="op" style="background-color: #3a3b3c;">
-          <div class="list-container">
 
-            <div v-if="store.loading" class="p-3 text-center">
-              <i class="pi pi-spin pi-spinner"></i> Carregando...
-            </div>
-
-            <div v-else-if="store.users.length === 0" class="p-3 text-center text-gray-500">
-              Nenhum usuário encontrado.
-            </div>
-
-            <Listbox v-else :options="store.users" optionLabel="firstName" class="listbox"
-              listStyle="max-height: 300px">
-              <template #option="slotProps">
-                <div class="list-users">
-                  <img :src="slotProps.option.imageUrl" class="border-circle"
-                    style="width: 40px; height: 40px; object-fit: cover"
-                    @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + slotProps.option.firstName" />
-                  <div class="flex flex-column">
-                    <span class="font-bold">{{ slotProps.option.firstName }} {{ slotProps.option.lastName }}</span>
-                  </div>
-                </div>
-              </template>
-</Listbox>
-</div>
-</Popover> -->
         <Popover ref="op" class="search-popover">
           <div class="search-results-container">
 
@@ -118,16 +40,12 @@
 
           </div>
         </Popover>
-        <!-- <ListUsers v-show="isDropdownVisible & !showMenuButton" :users="store.users" @close="closeDropdown" /> -->
       </div>
-
-
     </template>
 
     <template #end>
-      <Button v-if="showMenuButton" icon="pi pi-search" variant="text" style="color: white;"
+      <Button v-if="isMobile & showSearch" icon="pi pi-search" variant="text" style="color: white;"
         @click="searchView = !searchView" />
-      <!-- <InputText v-if="searchView" placeholder="Search" v-model="store.searchedName" @focus="openDropdown" @keydown.enter="search" /> -->
       <UserMenu />
     </template>
   </Toolbar>
@@ -139,31 +57,7 @@
       </InputIcon>
       <InputText placeholder="Buscar" v-model="store.searchedName" @focus="toggle" @keydown.enter="search" />
     </IconField>
-    <!-- <Popover ref="op" style="background-color: #3a3b3c;">
-      <div class="list-container">
 
-        <div v-if="store.loading" class="p-3 text-center">
-          <i class="pi pi-spin pi-spinner"></i> Carregando...
-        </div>
-
-        <div v-else-if="store.users.length === 0" class="p-3 text-center text-gray-500">
-          Nenhum usuário encontrado.
-        </div>
-
-        <Listbox v-else :options="store.users" optionLabel="firstName" class="listbox" listStyle="max-height: 300px">
-          <template #option="slotProps">
-            <div class="list-users">
-              <img :src="slotProps.option.imageUrl" class="border-circle"
-                style="width: 40px; height: 40px; object-fit: cover"
-                @error="$event.target.src = 'https://ui-avatars.com/api/?background=random&name=' + slotProps.option.firstName" />
-              <div class="flex flex-column">
-                <span class="font-bold">{{ slotProps.option.firstName }} {{ slotProps.option.lastName }}</span>
-              </div>
-            </div>
-          </template>
-        </Listbox>
-      </div>
-    </Popover> -->
     <Popover ref="op" class="search-popover">
       <div class="search-results-container">
 
@@ -189,28 +83,27 @@
 
       </div>
     </Popover>
-    <!-- <ListUsers v-show="isDropdownVisible" :users="store.users" @close="closeDropdown" /> -->
   </Drawer>
 
   <Drawer v-model:visible="visible" class="hamburguer">
     <ul>
-      <li @click="$emit('change-view', 'feed')">
+      <li @click="goToHome">
         <i class="fas fa-home"></i> Feed
       </li>
-      <div v-if="role === 'company'">
-        <li @click="$emit('change-view', 'form')">
+      <!-- <div v-if="role === 'company'">
+        <li @click="goToNewEstablishment">
           <i class="fas fa-plus-square"></i> Novo Estabelecimento
         </li>
-      </div>
-      <li @click="$emit('change-view', 'map')">
+      </div> -->
+      <li @click="goToMap">
         <i class="fas fa-map-marked-alt"></i> Mapa
       </li>
-      <li @click="$emit('change-view', 'establishment-list')">
+      <li @click="goToFindPlaces">
         <i class="fa-solid fa-location-dot"></i>
         Encontrar Locais
       </li>
       <div v-if="role === 'admin'">
-        <li @click="$emit('change-view', 'request')">
+        <li @click="goToRequest">
           <i class="fa-solid fa-list-check"></i>
           Solicitações Pendentes
         </li>
@@ -222,7 +115,8 @@
 <script setup>
 import UserMenu from '../components/TheDropdownProfile.vue'
 import { useStore } from '@/stores/signupStore'
-import { ref, defineProps } from 'vue'
+import { useAuthStore as userProfileStore } from '@/stores/loginStore'
+import { ref, defineProps, onMounted, onUnmounted, computed} from 'vue'
 import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import Toolbar from 'primevue/toolbar';
@@ -232,32 +126,22 @@ import InputIcon from 'primevue/inputicon';
 import Popover from 'primevue/popover';
 import { useRouter } from 'vue-router';
 
-
 const router = useRouter();
 const store = useStore()
+const profileStore = userProfileStore()
+const role = computed(() => profileStore.role?.toLowerCase())
 
-// const isDropdownVisible = ref(false);
 const searchView = ref(false);
 const visible = ref(false);
+const isMobile = ref(false);
 defineProps({
-  showMenuButton: {
+  showSearch: {
     type: Boolean,
     default: false
   }
 });
-// const openDropdown = () => {
-//   isDropdownVisible.value = true
-// }
-
-// const closeDropdown = () => {
-//   isDropdownVisible.value = false
-//   store.users = []
-//   store.searchedName = ''
-// }
-
 const search = async () => {
   await store.getAllProfiles()
-  // openDropdown()
 }
 
 const op = ref();
@@ -265,10 +149,35 @@ const op = ref();
 const toggle = (event) => {
   op.value.toggle(event);
 }
+function goToHome() {
+  router.push({ name: 'home' })
+}
+function goToMap() {
+  router.push({ name: 'map' })
+}
 const goToProfile = (userId) => {
-    op.value.hide();
-    router.push({ name: 'UserProfile', params: { id: userId } });
+  op.value.hide();
+  router.push({ name: 'UserProfile', params: { id: userId } });
 };
+function goToFindPlaces() {
+  router.push({ name: 'findPlaces' })
+}
+// function goToNewEstablishment(){
+//   router.push({name:'newEstablishment'})
+// }
+function goToRequest(){
+  router.push({name:'Request'})
+}
+onMounted(() => {
+  checkScreenSize();
+  window.addEventListener('resize', checkScreenSize);
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreenSize);
+})
+function checkScreenSize() {
+  isMobile.value = window.innerWidth < 768;
+}
 </script>
 
 <style scoped>

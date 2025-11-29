@@ -46,7 +46,7 @@ const updatePreview = () => {
   previewLng.value = p.lng.toFixed(6)
 }
 const closeMapModal = () => (showMapModal.value = false)
-const estadosMap = { 'Acre':'AC','Alagoas':'AL','Amapá':'AP','Amazonas':'AM','Bahia':'BA','Ceará':'CE','Distrito Federal':'DF','Espírito Santo':'ES','Goiás':'GO','Maranhão':'MA','Mato Grosso':'MT','Mato Grosso do Sul':'MS','Minas Gerais':'MG','Pará':'PA','Paraíba':'PB','Paraná':'PR','Pernambuco':'PE','Piauí':'PI','Rio de Janeiro':'RJ','Rio Grande do Norte':'RN','Rio Grande do Sul':'RS','Rondônia':'RO','Roraima':'RR','Santa Catarina':'SC','São Paulo':'SP','Sergipe':'SE','Tocantins':'TO'}
+const estadosMap = { 'Acre': 'AC', 'Alagoas': 'AL', 'Amapá': 'AP', 'Amazonas': 'AM', 'Bahia': 'BA', 'Ceará': 'CE', 'Distrito Federal': 'DF', 'Espírito Santo': 'ES', 'Goiás': 'GO', 'Maranhão': 'MA', 'Mato Grosso': 'MT', 'Mato Grosso do Sul': 'MS', 'Minas Gerais': 'MG', 'Pará': 'PA', 'Paraíba': 'PB', 'Paraná': 'PR', 'Pernambuco': 'PE', 'Piauí': 'PI', 'Rio de Janeiro': 'RJ', 'Rio Grande do Norte': 'RN', 'Rio Grande do Sul': 'RS', 'Rondônia': 'RO', 'Roraima': 'RR', 'Santa Catarina': 'SC', 'São Paulo': 'SP', 'Sergipe': 'SE', 'Tocantins': 'TO' }
 
 async function confirmFromMap() {
   if (!marker) return alert('Clique no mapa para posicionar o marcador.')
@@ -70,12 +70,72 @@ onUnmounted(() => map && map.remove())
 </script>
 
 <style scoped>
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2000}
-.modal-content{width:90%;max-width:800px;background:#fff;padding:1rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.map{height:420px;border-radius:6px;border:1px solid #ddd;margin-bottom:8px}
-.modal-actions{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.coords{font-size:.9rem;color:#333;margin-right:auto}
-.btn-light,.btn-primary{padding:.5rem .75rem;border-radius:4px;border:none;cursor:pointer;font-weight:500;transition:.15s}
-.btn-light{background:#f5f5f5;color:#333}.btn-light:hover{background:#e0e0e0}
-.btn-primary{background:#1976d2;color:#fff}.btn-primary:hover{background:#0f5cb8}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 800px;
+  background: #1f2022;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .2)
+}
+
+.map {
+  height: 420px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 8px
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap
+}
+
+.coords {
+  font-size: .9rem;
+  color: white;
+  margin-right: auto
+}
+
+.btn-light,
+.btn-primary {
+  padding: .5rem .75rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: .15s
+}
+
+.btn-light {
+  background: #f5f5f5;
+  color: #333
+}
+
+.btn-light:hover {
+  background: #e0e0e0
+}
+
+.btn-primary {
+  background: #1976d2;
+  color: #fff
+}
+
+.btn-primary:hover {
+  background: #0f5cb8
+}
 </style>

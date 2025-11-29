@@ -29,7 +29,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/SignupView.vue')
   },
-   {
+  {
     path: '/list',
     name: 'users',
     // route level code-splitting
@@ -46,25 +46,42 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/editProfileView.vue'),
     meta: { requiresAuth: true }
   },
-    {
+  {
     path: '/requests',
     name: 'Request',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/RequestView.vue'),
+    component: () => import('../views/RequestView.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/establishment/:id',
     name: 'establishmentDetails',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/EstablishmentDetails.vue'),
+    component: () => import('../components/EstablishmentDetails.vue'),
     meta: { requiresAuth: true },
     props: true
-  }
+  },
+  {
+    path: '/findPlaces',
+    name: 'findPlaces',
+    component: () => import('../views/FindPlacesView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/map',
+    name: 'map',
+    component: () => import('../views/MapView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/newEstablishment',
+    name: 'newEstablishment',
+    component: () => import('../views/NewEstablishmentView.vue'),
+    meta: { requiresAuth: true }
+  },
+    {
+    path: '/businessSignup',
+    name: 'businessSignup',
+    component: () => import('../views/BusinessSignupView.vue'),
+  },
 ]
 
 

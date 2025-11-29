@@ -1,24 +1,24 @@
 <template>
   <aside class="left-sidebar">
     <ul>
-      <li @click="$emit('change-view', 'feed')">
+      <li @click="goToHome">
         <i class="fas fa-home"></i> Feed
       </li>
-      <div v-if="role === 'company'">
-        <li @click="$emit('change-view', 'form')">
+      <!-- <div v-if="role === 'company'">
+        <li @click="goToNewEstablishment">
           <i class="fas fa-plus-square"></i> Novo Estabelecimento
         </li>
-      </div>
+      </div> -->
 
-      <li @click="$emit('change-view', 'map')">
+      <li @click="goToMap">
         <i class="fas fa-map-marked-alt"></i> Mapa
       </li>
-      <li @click="$emit('change-view', 'establishment-list')">
+      <li @click="goToFindPlaces">
         <i class="fa-solid fa-location-dot"></i>
         Encontrar Locais
       </li>
       <div v-if="role === 'admin'">
-        <li @click="$emit('change-view', 'request')">
+        <li @click="goToRequest">
           <i class="fa-solid fa-list-check"></i>
           Solicitações Pendentes
         </li>
@@ -29,8 +29,27 @@
 <script setup>
 import { computed} from 'vue';
 import { useAuthStore as userProfileStore } from '@/stores/loginStore'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 const store = userProfileStore()
 const role = computed(() => store.role?.toLowerCase())
+
+function goToFindPlaces(){
+  router.push({name: 'findPlaces'})
+}
+function goToHome(){
+  router.push({name: 'home'})
+}
+function goToMap(){
+  router.push({name: 'map'})
+}
+// function goToNewEstablishment(){
+//   router.push({name:'newEstablishment'})
+// }
+function goToRequest(){
+  router.push({name:'Request'})
+}
 </script>
 
 

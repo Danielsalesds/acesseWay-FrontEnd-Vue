@@ -88,7 +88,6 @@ async function reportPost({ postId, reason }) {
 defineExpose({ reloadPosts, scrollToTop })
 </script>
 
-
 <style scoped>
 .feed {
   display: flex;

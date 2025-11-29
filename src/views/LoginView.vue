@@ -29,7 +29,12 @@
         <a href="#" class="forgot-password">Esqueceu a senha?</a>
       </form>
       <Divider />
-      <Button label="Criar nova conta" severity="success" variant="outlined" @click="Signup" class="btn" />
+      <div class="buttons">
+        <Button label="Criar nova conta" severity="success" variant="outlined" @click="Signup" class="btn" />
+        <Button label="Cadastrar minha empresa" icon="pi pi-briefcase" severity="info" variant="outlined"
+          @click="businessSignup" class="business-btn" />
+      </div>
+
     </div>
   </div>
 </template>
@@ -71,6 +76,9 @@ async function login() {
 const Signup = () => {
   router.push('/Signup')
 }
+const businessSignup = () =>{
+  router.push({name:'businessSignup'})
+}
 </script>
 
 <style>
@@ -80,10 +88,18 @@ body {
 }
 </style>
 <style scoped>
+.buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.business-btn {
+  width: 100% !important;
+}
+
 .btn {
   color: #81C784 !important;
   width: 100% !important;
-
 }
 
 .form-field {

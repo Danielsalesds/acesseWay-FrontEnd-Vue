@@ -35,17 +35,7 @@
             </select>
           </div>
         </div>
-        <!-- <div class="form-group">
-           <label for="birthDate" class="label-title">Data de nascimento</label>
-           <InputMask 
-              id="birthDate" 
-              v-model="form.birthDate" 
-              mask="99/99/9999" 
-              placeholder="dd/mm/aaaa" 
-              class="w-full" 
-              required
-           />
-        </div> -->
+
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px;">
           <span>Gênero</span>
           <SelectButton v-model="form.gender" :options="genderOptions" optionLabel="label" optionValue="value" />
@@ -93,7 +83,7 @@ const store = useStore()
 const roleOptions = ref([
   { label: 'Comum', value: 'NORMAL' },
   { label: 'Profissional', value: 'PROFESSIONAL' },
-  { label: 'Empresa', value: 'COMPANY' }
+  // { label: 'Empresa', value: 'COMPANY' }
 ]);
 const genderOptions = ref([
   { label: 'Masculino', value: 'MALE' },

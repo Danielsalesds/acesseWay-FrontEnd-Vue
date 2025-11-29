@@ -1,12 +1,12 @@
 <template>
   <div class="layout-home">
     <!-- Passa função toggleMap para o Header -->
-    <TheHeader @show-map="showMap" @show-home="showFeed" @toggle-map="setView('map')"  @change-view="setView" :show-menu-button="isMobile"/>
+    <TheHeader :show-search="true"/>
     <main class="content">
       <LeftSidebar v-if="!isMobile" @change-view="setView" :class="{ hide: currentView === 'RequestView' }" />
       <!-- Mostra feed ou mapa -->
-      <component :is="currentView" ref="feedRef" :class="{ requestView: currentView === 'RequestView' }" />
-
+      <!-- <component :is="currentView" ref="feedRef" :class="{ requestView: currentView === 'RequestView' }" /> -->
+      <TheFeed/>
       <!-- <RightSidebar /> -->
     </main>
   </div>
@@ -15,72 +15,32 @@
 <script>
 import LeftSidebar from '../components/LeftSidebar.vue'
 import TheFeed from '../components/TheFeed.vue'
-import RightSidebar from '../components/RightSidebar.vue'
+
 import TheHeader from '../components/TheHeader.vue'
-import EstablishmentForm from '../components/EstablishmentForm.vue'
-import EstablishmentMap from '../components/EstablishmentMap.vue'
-import FindPlaces from '@/components/FindPlaces.vue'
-import RequestView from '../views/RequestView.vue'
-import Button from 'primevue/button'
-import Drawer from 'primevue/drawer'
 export default {
   components: {
     LeftSidebar,
     TheFeed,
-    RightSidebar,
     TheHeader,
-    EstablishmentForm,
-    EstablishmentMap,
-    FindPlaces,
-    RequestView,
-    Button,
-    Drawer
   },
   data() {
     return {
-      currentView: 'TheFeed',
       visible: false,
-      isMobile: false,
+      // isMobile: false,
     }
   },
-  mounted(){
-    this.checkScreenSize();
-    window.addEventListener('resize', this.checkScreenSize);
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.checkScreenSize);
-  },
-  methods: {
-    checkScreenSize() {
-      this.isMobile = window.innerWidth < 768;
-    },
-    showFeed() {
-      if (this.currentView === 'TheFeed') {
-        // já está no feed → apenas recarrega
-        this.$refs.feedRef?.reloadPosts?.()
-        this.$refs.feedRef?.scrollToTop?.()
-      } else {
-        // troca para o feed
-        this.currentView = 'TheFeed'
-      }
-    },
-    showMap() {
-      // mostra o mapa (sem precisar dar duplo clique)>>>
-      this.currentView = 'EstablishmentMap'
-    },
-    setView(view) {
-      this.currentView =
-        view === 'feed'
-          ? 'TheFeed'
-          : view === 'form'
-            ? 'EstablishmentForm'
-            : view === 'map'
-              ? 'EstablishmentMap'
-              : view === 'request'
-                ? 'RequestView'
-                : 'FindPlaces'
-    }
-  }
+  // mounted(){
+  //   this.checkScreenSize();
+  //   window.addEventListener('resize', this.checkScreenSize);
+  // },
+  // beforeUnmount() {
+  //   window.removeEventListener('resize', this.checkScreenSize);
+  // },
+  // methods: {
+  //   checkScreenSize() {
+  //     this.isMobile = window.innerWidth < 768;
+  //   },
+  // }
 }
 </script>
 <style>

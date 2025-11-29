@@ -1,4 +1,5 @@
 <template>
+    <TheHeader/>
     <h1 class="title">Tabela de Solicitações</h1>
     <div v-if="loading"> Carregando dados</div>
     <div v-else-if="requests.length > 0" class="table-request">
@@ -40,6 +41,7 @@
 </template>
 <script setup>
     import { defineProps } from 'vue'
+    import TheHeader from './TheHeader.vue';
     defineProps({
         requests:{
             type: Array,
@@ -52,8 +54,8 @@
     })
 </script>
 <style scoped>
-    .title {
-    margin-top: 40px;
+.title {
+    margin-top: 20px;
     text-align: center;
     font-size: 26px;
 }
@@ -62,7 +64,7 @@
 .table-request {
     display: flex;
     justify-content: center;
-    padding: 30px;
+    /* padding: 30px; */
     width: 100%;
 }
 

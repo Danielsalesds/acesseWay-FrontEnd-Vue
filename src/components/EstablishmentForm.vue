@@ -76,7 +76,7 @@ async function submit() {
 /* CONTAINER PRINCIPAL */
 .container {
   max-width: 750px;
-  margin: 1.5rem auto;
+  margin: 1.5rem ;
   padding: 2rem;
   background: #1f2022;
   border-radius: 12px;

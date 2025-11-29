@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
         // Buscar os dados do usuário logo após logar
         //await this.getUserProfile(data.id)
 
-        // 🔹 Também salva no user store
+        //  Também salva no user store
         const userStore = useUserStore()
         userStore.setUser({
           id: data.id,
@@ -54,8 +54,12 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) throw new Error('Sem token, faça login primeiro.')
 
       const res = await fetch(`https://acessway.onrender.com/user/${userId}`, {
-        headers: { 'Authorization': `Bearer ${this.token}` }
-      })
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       const data = await res.json()
       this.user = data
       console.log('User restaurado:>>>', this.user)
